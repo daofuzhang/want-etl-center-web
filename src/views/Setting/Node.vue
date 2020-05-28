@@ -1,65 +1,77 @@
 <template>
-  <div>
-    <md-field>
-      <label>Initial Value</label>
-      <md-input v-model="initial"></md-input>
-    </md-field>
+  <div class="card-container">
+    <md-card v-for="(node) in dataNodeList" v-bind:key="node.id">
+      <md-card-header>
+        <md-card-header-text>
+          <div class="md-title">{{node.name}}</div>
+        </md-card-header-text>
+      </md-card-header>
 
-    <md-field>
-      <label>Initial Value (Read Only)</label>
-      <md-input v-model="initial" readonly></md-input>
-    </md-field>
-
-    <md-field>
-      <label>Type here!</label>
-      <md-input v-model="type"></md-input>
-      <span class="md-helper-text">Helper text</span>
-    </md-field>
-
-    <md-field>
-      <label>With label</label>
-      <md-input v-model="withLabel" placeholder="A nice placeholder"></md-input>
-    </md-field>
-
-    <md-field md-inline>
-      <label>Inline</label>
-      <md-input v-model="inline"></md-input>
-    </md-field>
-
-    <md-field>
-      <label>Number</label>
-      <md-input v-model="number" type="number"></md-input>
-    </md-field>
-
-    <md-field>
-      <label>Textarea</label>
-      <md-textarea v-model="textarea"></md-textarea>
-    </md-field>
-
-    <md-field>
-      <label>Textarea with Autogrow</label>
-      <md-textarea v-model="autogrow" md-autogrow></md-textarea>
-    </md-field>
-
-    <md-field>
-      <label>Disabled</label>
-      <md-input v-model="disabled" disabled></md-input>
-    </md-field>
+      <md-card-content>
+        <p v-show="node.address">{{node.address}}</p>
+        <p v-show="node.id">{{node.id}}</p>
+        <p>Active: {{node.active}} / {{node.maxActive}}</p>
+      </md-card-content>
+    </md-card>
   </div>
 </template>
 
 <script>
 export default {
-  name: "TextFields",
-  data: () => ({
-    initial: "Initial Value",
-    type: null,
-    withLabel: null,
-    inline: null,
-    number: null,
-    textarea: null,
-    autogrow: null,
-    disabled: null,
-  }),
+  name: "Nodes",
+  data() {
+    return {
+      dataNodeList: []
+    };
+  },
+  created() {
+    this.getNodeList();
+  },
+  methods: {
+    getNodeList() {
+      this.$http({
+        method: "post",
+        url: "dashboard/getNodes",
+        headers: {
+          "Content-Type": "application/json"
+        }
+      })
+        .then(resp => {
+          const respData = resp.data;
+          if (respData.returnCode === 1) {
+            // 請求成功
+            // console.log("respData.data.content = ", respData.data);
+            const results = respData.data;
+            this.dataNodeList = [];
+            this.$nextTick(() => {
+              results.forEach(element => {
+                this.dataNodeList.push({ ...element });
+              });
+            });
+          } else {
+            // 請求失敗
+            this.alertContent = "取得紀錄詳情失敗";
+            this.alertVisible = true;
+          }
+        })
+        .catch(error => {
+          console.log(error);
+        });
+    }
+  }
 };
 </script>
+
+
+<style lang="scss" scoped>
+.card-container {
+  padding: 10px;
+
+  .md-card {
+    display: inline-block;
+    width: 280px;
+    margin: 0 10px 10px 0;
+    vertical-align: top;
+  }
+}
+</style>

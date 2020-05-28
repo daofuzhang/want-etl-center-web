@@ -2,16 +2,14 @@
   <div class="full-control">
     <div class="list">
       <md-list>
-        <md-list-item
-          v-for="(item, index) in items"
-          v-bind:key="index"
-          @click="onItemClick(index)"
-        >
+        <md-list-item v-for="(item, index) in items" v-bind:key="index" @click="onItemClick(index)">
           <span class="md-list-item-text">{{ item.name }}</span>
         </md-list-item>
       </md-list>
     </div>
-    <div class="control"><router-view></router-view></div>
+    <div class="control">
+      <router-view></router-view>
+    </div>
   </div>
 </template>
 
@@ -25,15 +23,15 @@ export default {
         { name: "User" },
         { name: "Endpoint" },
         { name: "Node" },
-        { name: "Notification" },
-      ],
+        { name: "Notification" }
+      ]
     };
   },
   methods: {
     onItemClick(index) {
       this.$router.push({ name: this.items[index].name });
-    },
-  },
+    }
+  }
 };
 </script>
 

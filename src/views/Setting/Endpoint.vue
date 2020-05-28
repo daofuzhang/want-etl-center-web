@@ -1,108 +1,12 @@
 <template>
   <div>
-    <md-dialog-alert
-      :md-active.sync="alertVisible"
-      :md-content="alertContent"
-      md-confirm-text="Close"
-    />
+    <div class="card-container">
+      <md-card v-for="(item) in list" v-bind:key="item.id">
+        <md-card-header>
+          <md-card-header-text>
+            <div class="md-title">{{item.name}}</div>
+          </md-card-header-text>
 
-    <md-dialog :md-active.sync="showDialog">
-      <md-dialog-content class="page-container md-layout-column">
-        <md-field md-clearable>
-          <label>Name</label>
-          <md-input v-model="endpoint.name"></md-input>
-        </md-field>
-
-        <md-field>
-          <label>Type</label>
-          <md-select v-model="endpoint.type" name="type" id="type">
-            <md-option
-              v-for="(item) in dataBaseTypes"
-              v-bind:key="item.id"
-              v-model="item.name"
-            >{{item.name}}</md-option>
-          </md-select>
-        </md-field>
-
-        <md-field v-show="endpoint.type != 'SAP - JCO'" md-clearable>
-          <label>URL</label>
-          <md-input v-model="endpoint.url"></md-input>
-        </md-field>
-
-        <md-field v-show="endpoint.type == 'SAP - JCO'" md-clearable>
-          <label>ashost</label>
-          <md-input v-model="endpoint.ashost"></md-input>
-        </md-field>
-
-        <md-field v-show="endpoint.type == 'SAP - JCO'" md-clearable>
-          <label>client</label>
-          <md-input v-model="endpoint.client"></md-input>
-        </md-field>
-
-        <md-field v-show="endpoint.type == 'SAP - JCO'" md-clearable>
-          <label>sysnr</label>
-          <md-input v-model="endpoint.sysnr"></md-input>
-        </md-field>
-
-        <md-field v-show="endpoint.type == 'SAP - JCO'" md-clearable>
-          <label>lang</label>
-          <md-input v-model="endpoint.lang"></md-input>
-        </md-field>
-
-        <md-field v-show="endpoint.type == 'SAP - JCO'" md-clearable>
-          <label>peak_limit</label>
-          <md-input v-model="endpoint.peakLimit"></md-input>
-        </md-field>
-
-        <md-field v-show="endpoint.type == 'SAP - JCO'" md-clearable>
-          <label>pool_capacity</label>
-          <md-input v-model="endpoint.poolCapacity"></md-input>
-        </md-field>
-
-        <md-field md-clearable>
-          <label>User</label>
-          <md-input v-model="endpoint.user"></md-input>
-        </md-field>
-
-        <md-field>
-          <label>Password</label>
-          <md-input v-model="endpoint.passwd" type="password"></md-input>
-        </md-field>
-
-        <md-dialog-actions>
-          <md-button
-            class="md-primary"
-            @click="
-          (showDialog = false),
-          (saveEndpoint(endpoint))
-          "
-          >Save</md-button>
-          <md-button class="md-primary" @click="showDialog = false">Close</md-button>
-        </md-dialog-actions>
-      </md-dialog-content>
-    </md-dialog>
-
-    <div>
-      <md-button :md-active.sync="showDialog" class="md-dense md-raised md-primary">
-        <div class="md-ripple">
-          <div
-            class="md-button-content"
-            @click="
-              (showDialog = true),
-                (endpoint = {})
-            "
-          >Add Endpoint</div>
-        </div>
-      </md-button>
-    </div>
-
-    <md-card v-for="(item) in list" v-bind:key="item.id">
-      <md-card-header>
-        <md-card-header-text>
-          <div class="md-title">{{item.name}}</div>
-        </md-card-header-text>
-
-        <div>
           <md-button
             @click="
               (showDialog = true),
@@ -112,9 +16,6 @@
           >
             <md-icon>edit</md-icon>
           </md-button>
-        </div>
-
-        <div>
           <md-dialog-confirm
             :md-active.sync="active"
             md-title="確定要刪除?"
@@ -124,26 +25,118 @@
             @md-confirm="deleteEndpoint(item.id)"
           />
 
-          <!-- <md-button class="md-primary md-raised" @click="active = true">Confirm</md-button> -->
-
           <md-button class="md-icon-button md-plain" @click="active = true">
             <md-icon>delete</md-icon>
           </md-button>
-        </div>
-      </md-card-header>
+        </md-card-header>
 
-      <md-card-content>
-        <p>● Type: {{item.type}}</p>
-        <p v-show="item.url">● URL: {{item.url}}</p>
-        <p v-show="item.ashost">● ashost: {{item.ashost}}</p>
-        <p v-show="item.client">● client: {{item.client}}</p>
-        <p v-show="item.sysnr">● sysnr: {{item.sysnr}}</p>
-        <p v-show="item.lang">● lang: {{item.lang}}</p>
-        <p>● User: {{item.user}}</p>
-        <p v-show="item.peekLimit">● peek_limit: {{item.peekLimit}}</p>
-        <p v-show="item.poolCapacity">● pool_capacity: {{item.poolCapacity}}</p>
-      </md-card-content>
-    </md-card>
+        <md-card-content>
+          <p>● Type: {{item.type}}</p>
+          <p v-show="item.url">● URL: {{item.url}}</p>
+          <p v-show="item.ashost">● ashost: {{item.ashost}}</p>
+          <p v-show="item.client">● client: {{item.client}}</p>
+          <p v-show="item.sysnr">● sysnr: {{item.sysnr}}</p>
+          <p v-show="item.lang">● lang: {{item.lang}}</p>
+          <p>● User: {{item.user}}</p>
+          <p v-show="item.peekLimit">● peek_limit: {{item.peekLimit}}</p>
+          <p v-show="item.poolCapacity">● pool_capacity: {{item.poolCapacity}}</p>
+        </md-card-content>
+      </md-card>
+
+      <md-speed-dial class="md-bottom-right">
+        <md-button
+          class="md-fab md-primary"
+          @click="
+              (showDialog = true),
+                (endpoint = {...item})
+            "
+        >
+          <md-icon>add</md-icon>
+        </md-button>
+      </md-speed-dial>
+
+      <md-dialog-alert
+        :md-active.sync="alertVisible"
+        :md-content="alertContent"
+        md-confirm-text="Close"
+      />
+
+      <md-dialog :md-active.sync="showDialog">
+        <md-dialog-content class="page-container md-layout-column">
+          <md-field md-clearable>
+            <label>Name</label>
+            <md-input v-model="endpoint.name"></md-input>
+          </md-field>
+
+          <md-field>
+            <label>Type</label>
+            <md-select v-model="endpoint.type" name="type" id="type">
+              <md-option
+                v-for="(item) in dataBaseTypes"
+                v-bind:key="item.id"
+                v-model="item.name"
+              >{{item.name}}</md-option>
+            </md-select>
+          </md-field>
+
+          <md-field v-show="endpoint.type != 'SAP - JCO'" md-clearable>
+            <label>URL</label>
+            <md-input v-model="endpoint.url"></md-input>
+          </md-field>
+
+          <md-field v-show="endpoint.type == 'SAP - JCO'" md-clearable>
+            <label>ashost</label>
+            <md-input v-model="endpoint.ashost"></md-input>
+          </md-field>
+
+          <md-field v-show="endpoint.type == 'SAP - JCO'" md-clearable>
+            <label>client</label>
+            <md-input v-model="endpoint.client"></md-input>
+          </md-field>
+
+          <md-field v-show="endpoint.type == 'SAP - JCO'" md-clearable>
+            <label>sysnr</label>
+            <md-input v-model="endpoint.sysnr"></md-input>
+          </md-field>
+
+          <md-field v-show="endpoint.type == 'SAP - JCO'" md-clearable>
+            <label>lang</label>
+            <md-input v-model="endpoint.lang"></md-input>
+          </md-field>
+
+          <md-field v-show="endpoint.type == 'SAP - JCO'" md-clearable>
+            <label>peak_limit</label>
+            <md-input v-model="endpoint.peakLimit"></md-input>
+          </md-field>
+
+          <md-field v-show="endpoint.type == 'SAP - JCO'" md-clearable>
+            <label>pool_capacity</label>
+            <md-input v-model="endpoint.poolCapacity"></md-input>
+          </md-field>
+
+          <md-field md-clearable>
+            <label>User</label>
+            <md-input v-model="endpoint.user"></md-input>
+          </md-field>
+
+          <md-field>
+            <label>Password</label>
+            <md-input v-model="endpoint.passwd" type="password"></md-input>
+          </md-field>
+
+          <md-dialog-actions>
+            <md-button
+              class="md-primary"
+              @click="
+          (showDialog = false),
+          (saveEndpoint(endpoint))
+          "
+            >Save</md-button>
+            <md-button class="md-primary" @click="showDialog = false">Close</md-button>
+          </md-dialog-actions>
+        </md-dialog-content>
+      </md-dialog>
+    </div>
   </div>
 </template>
 
@@ -287,28 +280,19 @@ export default {
 
 
 <style lang="scss" scoped>
-.md-card {
-  display: inline-block;
-  width: 400px;
-  margin: 10px;
-  vertical-align: top;
+.card-container {
+  padding: 10px;
+
+  .md-card {
+    display: inline-block;
+    width: 400px;
+    margin: 0 10px 10px 0;
+    vertical-align: top;
+  }
 }
 
 .md-dialog {
   min-width: 500px;
-  padding: $padding;
-}
-
-.dialog-content {
-  min-width: 1200px;
-  height: 500px;
-  padding: $padding;
-  overflow: auto;
-
-  .md-scrollbar {
-    display: inline-grid;
-    padding: $padding;
-  }
 }
 </style>
 
