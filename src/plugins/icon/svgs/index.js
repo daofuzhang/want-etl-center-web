@@ -1,0 +1,6 @@
+import './bars'
+import './close'
+import './arrowUpCircle'
+import './angleRight'
+import './bomb'
+import './robot'

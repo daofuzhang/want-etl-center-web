@@ -1,0 +1,61 @@
+/**
+* break point
+*/
+$break-point-a: 768px;
+$break-point-b: 1024px;
+$break-point-c: 1366px;
+$break-point-d: 1440px;
+$break-point-e: 1920px;
+
+/**
+* 換膚
+*/
+$main-color: #435058;
+$main-color-light: #848c8e;
+$main-color-font: #fff;
+$main-color-contrast: #ffb86f;
+$main-color-gold: #e0ca3c;
+$main-color-red: #ad7a99;
+$main-color-green: #7cea9c;
+$main-border-radius: 3px;
+
+$main-container-padding: 20px 15px;
+$main-body-color: #fafafa;
+
+/**
+* animate
+*/
+@mixin transition($property) {
+  transition: $property 0.4s;
+}
+
+/**
+* button
+*/
+%buttonNormal {
+  display: inline-block;
+  width: auto;
+  padding: 0.8em 1em;
+  font-size: 14px;
+  color: $main-color-font;
+  text-align: center;
+  cursor: pointer;
+  user-select: none;
+  background-color: $main-color;
+  border: 1px solid $main-color;
+  border-radius: 3px;
+
+  &:not(:last-of-type) {
+    margin-right: 10px;
+  }
+
+  &:hover {
+    @include transition(all);
+
+    color: $main-color;
+    background-color: $main-color-font;
+  }
+}
+
+$list-width: 320px;
+$padding: 16px;
