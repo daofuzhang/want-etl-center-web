@@ -1,44 +1,39 @@
 <template>
-  <div>
-    <md-field>
-      <label>No error</label>
-      <md-input v-model="noError"></md-input>
-    </md-field>
+  <md-table md-card>
+    <md-table-toolbar>
+      <md-button :md-active.sync="showDialog" class="md-dense md-raised md-primary">
+        <div class="md-ripple">
+          <div
+            class="md-button-content"
+            @click="
+              (showDialog = true),
+                (mailGroup = {})
+            "
+          >Add User</div>
+        </div>
+      </md-button>
+    </md-table-toolbar>
 
-    <md-field :class="messageClass">
-      <label>Required Field</label>
-      <md-input v-model="required" required></md-input>
-      <span class="md-error">There is an error</span>
-    </md-field>
-
-    <md-field :class="messageClass">
-      <label>Textarea</label>
-      <md-textarea v-model="textarea" required></md-textarea>
-      <span class="md-helper-text">Helper text</span>
-      <span class="md-error">There is an error</span>
-    </md-field>
-
-    <md-switch v-model="hasMessages"
-      >{{ !hasMessages ? "Show" : "Hide" }} Errors</md-switch
-    >
-  </div>
+    <md-table-row>
+      <md-table-head md-numeric>#</md-table-head>
+      <md-table-head>ID</md-table-head>
+      <md-table-head>Name</md-table-head>
+      <md-table-head>Edit</md-table-head>
+      <md-table-head>Delete</md-table-head>
+    </md-table-row>
+  </md-table>
 </template>
 
 <script>
 export default {
   name: "ErrorsMessages",
-  data: () => ({
-    noError: null,
-    required: null,
-    textarea: null,
-    hasMessages: false,
-  }),
+  data: () => ({}),
   computed: {
     messageClass() {
       return {
-        "md-invalid": this.hasMessages,
+        "md-invalid": this.hasMessages
       };
-    },
-  },
+    }
+  }
 };
 </script>

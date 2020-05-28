@@ -1,183 +1,319 @@
 <template>
   <div>
-    <md-table
-      v-model="users"
-      md-sort="name"
-      md-sort-order="asc"
-      md-card
-      md-fixed-header
-    >
-      <md-table-toolbar>
-        <h1 class="md-title">Users</h1>
-      </md-table-toolbar>
+    <md-dialog-alert
+      :md-active.sync="alertVisible"
+      :md-content="alertContent"
+      md-confirm-text="Close"
+    />
 
-      <md-table-row slot="md-table-row" slot-scope="{ item }">
-        <md-table-cell md-label="ID" md-sort-by="id" md-numeric>{{
-          item.id
-        }}</md-table-cell>
-        <md-table-cell md-label="Name" md-sort-by="name">{{
-          item.name
-        }}</md-table-cell>
-        <md-table-cell md-label="Email" md-sort-by="email">{{
-          item.email
-        }}</md-table-cell>
-        <md-table-cell md-label="Gender" md-sort-by="gender">{{
-          item.gender
-        }}</md-table-cell>
-        <md-table-cell md-label="Job Title" md-sort-by="title">{{
-          item.title
-        }}</md-table-cell>
-      </md-table-row>
-    </md-table>
+    <md-dialog :md-active.sync="showDialog">
+      <md-dialog-content class="page-container md-layout-column">
+        <md-field md-clearable>
+          <label>Name</label>
+          <md-input v-model="endpoint.name"></md-input>
+        </md-field>
+
+        <md-field>
+          <label>Type</label>
+          <md-select v-model="endpoint.type" name="type" id="type">
+            <md-option
+              v-for="(item) in dataBaseTypes"
+              v-bind:key="item.id"
+              v-model="item.name"
+            >{{item.name}}</md-option>
+          </md-select>
+        </md-field>
+
+        <md-field v-show="endpoint.type != 'SAP - JCO'" md-clearable>
+          <label>URL</label>
+          <md-input v-model="endpoint.url"></md-input>
+        </md-field>
+
+        <md-field v-show="endpoint.type == 'SAP - JCO'" md-clearable>
+          <label>ashost</label>
+          <md-input v-model="endpoint.ashost"></md-input>
+        </md-field>
+
+        <md-field v-show="endpoint.type == 'SAP - JCO'" md-clearable>
+          <label>client</label>
+          <md-input v-model="endpoint.client"></md-input>
+        </md-field>
+
+        <md-field v-show="endpoint.type == 'SAP - JCO'" md-clearable>
+          <label>sysnr</label>
+          <md-input v-model="endpoint.sysnr"></md-input>
+        </md-field>
+
+        <md-field v-show="endpoint.type == 'SAP - JCO'" md-clearable>
+          <label>lang</label>
+          <md-input v-model="endpoint.lang"></md-input>
+        </md-field>
+
+        <md-field v-show="endpoint.type == 'SAP - JCO'" md-clearable>
+          <label>peak_limit</label>
+          <md-input v-model="endpoint.peakLimit"></md-input>
+        </md-field>
+
+        <md-field v-show="endpoint.type == 'SAP - JCO'" md-clearable>
+          <label>pool_capacity</label>
+          <md-input v-model="endpoint.poolCapacity"></md-input>
+        </md-field>
+
+        <md-field md-clearable>
+          <label>User</label>
+          <md-input v-model="endpoint.user"></md-input>
+        </md-field>
+
+        <md-field>
+          <label>Password</label>
+          <md-input v-model="endpoint.passwd" type="password"></md-input>
+        </md-field>
+
+        <md-dialog-actions>
+          <md-button
+            class="md-primary"
+            @click="
+          (showDialog = false),
+          (saveEndpoint(endpoint))
+          "
+          >Save</md-button>
+          <md-button class="md-primary" @click="showDialog = false">Close</md-button>
+        </md-dialog-actions>
+      </md-dialog-content>
+    </md-dialog>
+
+    <div>
+      <md-button :md-active.sync="showDialog" class="md-dense md-raised md-primary">
+        <div class="md-ripple">
+          <div
+            class="md-button-content"
+            @click="
+              (showDialog = true),
+                (endpoint = {})
+            "
+          >Add Endpoint</div>
+        </div>
+      </md-button>
+    </div>
+
+    <md-card v-for="(item) in list" v-bind:key="item.id">
+      <md-card-header>
+        <md-card-header-text>
+          <div class="md-title">{{item.name}}</div>
+        </md-card-header-text>
+
+        <div>
+          <md-button
+            @click="
+              (showDialog = true),
+                (endpoint = {...item})
+            "
+            class="md-icon-button md-plain"
+          >
+            <md-icon>edit</md-icon>
+          </md-button>
+        </div>
+
+        <div>
+          <md-dialog-confirm
+            :md-active.sync="active"
+            md-title="確定要刪除?"
+            md-confirm-text="確定"
+            md-cancel-text="取消"
+            @md-cancel="active = false"
+            @md-confirm="deleteEndpoint(item.id)"
+          />
+
+          <!-- <md-button class="md-primary md-raised" @click="active = true">Confirm</md-button> -->
+
+          <md-button class="md-icon-button md-plain" @click="active = true">
+            <md-icon>delete</md-icon>
+          </md-button>
+        </div>
+      </md-card-header>
+
+      <md-card-content>
+        <p>● Type: {{item.type}}</p>
+        <p v-show="item.url">● URL: {{item.url}}</p>
+        <p v-show="item.ashost">● ashost: {{item.ashost}}</p>
+        <p v-show="item.client">● client: {{item.client}}</p>
+        <p v-show="item.sysnr">● sysnr: {{item.sysnr}}</p>
+        <p v-show="item.lang">● lang: {{item.lang}}</p>
+        <p>● User: {{item.user}}</p>
+        <p v-show="item.peekLimit">● peek_limit: {{item.peekLimit}}</p>
+        <p v-show="item.poolCapacity">● pool_capacity: {{item.poolCapacity}}</p>
+      </md-card-content>
+    </md-card>
   </div>
 </template>
 
+
+
 <script>
 export default {
-  name: "TableFixed",
-  data: () => ({
-    users: [
-      {
-        id: 1,
-        name: "Shawna Dubbin",
-        email: "sdubbin0@geocities.com",
-        gender: "Male",
-        title: "Assistant Media Planner",
-      },
-      {
-        id: 2,
-        name: "Odette Demageard",
-        email: "odemageard1@spotify.com",
-        gender: "Female",
-        title: "Account Coordinator",
-      },
-      {
-        id: 3,
-        name: "Vera Taleworth",
-        email: "vtaleworth2@google.ca",
-        gender: "Male",
-        title: "Community Outreach Specialist",
-      },
-      {
-        id: 4,
-        name: "Lonnie Izkovitz",
-        email: "lizkovitz3@youtu.be",
-        gender: "Female",
-        title: "Operator",
-      },
-      {
-        id: 5,
-        name: "Thatcher Stave",
-        email: "tstave4@reference.com",
-        gender: "Male",
-        title: "Software Test Engineer III",
-      },
-      {
-        id: 6,
-        name: "Karim Chipping",
-        email: "kchipping5@scribd.com",
-        gender: "Female",
-        title: "Safety Technician II",
-      },
-      {
-        id: 7,
-        name: "Helge Holyard",
-        email: "hholyard6@howstuffworks.com",
-        gender: "Female",
-        title: "Internal Auditor",
-      },
-      {
-        id: 8,
-        name: "Rod Titterton",
-        email: "rtitterton7@nydailynews.com",
-        gender: "Male",
-        title: "Technical Writer",
-      },
-      {
-        id: 9,
-        name: "Gawen Applewhite",
-        email: "gapplewhite8@reverbnation.com",
-        gender: "Female",
-        title: "GIS Technical Architect",
-      },
-      {
-        id: 10,
-        name: "Nero Mulgrew",
-        email: "nmulgrew9@plala.or.jp",
-        gender: "Female",
-        title: "Staff Scientist",
-      },
-      {
-        id: 11,
-        name: "Cybill Rimington",
-        email: "crimingtona@usnews.com",
-        gender: "Female",
-        title: "Assistant Professor",
-      },
-      {
-        id: 12,
-        name: "Maureene Eggleson",
-        email: "megglesonb@elpais.com",
-        gender: "Male",
-        title: "Recruiting Manager",
-      },
-      {
-        id: 13,
-        name: "Cortney Caulket",
-        email: "ccaulketc@cbsnews.com",
-        gender: "Male",
-        title: "Safety Technician IV",
-      },
-      {
-        id: 14,
-        name: "Selig Swynfen",
-        email: "sswynfend@cpanel.net",
-        gender: "Female",
-        title: "Environmental Specialist",
-      },
-      {
-        id: 15,
-        name: "Ingar Raggles",
-        email: "iragglese@cbc.ca",
-        gender: "Female",
-        title: "VP Sales",
-      },
-      {
-        id: 16,
-        name: "Karmen Mines",
-        email: "kminesf@topsy.com",
-        gender: "Male",
-        title: "Administrative Officer",
-      },
-      {
-        id: 17,
-        name: "Salome Judron",
-        email: "sjudrong@jigsy.com",
-        gender: "Male",
-        title: "Staff Scientist",
-      },
-      {
-        id: 18,
-        name: "Clarinda Marieton",
-        email: "cmarietonh@theatlantic.com",
-        gender: "Male",
-        title: "Paralegal",
-      },
-      {
-        id: 19,
-        name: "Paxon Lotterington",
-        email: "plotteringtoni@netvibes.com",
-        gender: "Female",
-        title: "Marketing Assistant",
-      },
-      {
-        id: 20,
-        name: "Maura Thoms",
-        email: "mthomsj@webeden.co.uk",
-        gender: "Male",
-        title: "Actuary",
-      },
-    ],
-  }),
+  name: "RegularCards",
+  data() {
+    return {
+      list: [],
+      endpoint: {},
+      dataBaseTypes: [],
+      showDialog: false,
+      active: false,
+      alertContent: "",
+      alertVisible: false
+    };
+  },
+  created() {
+    this.getEndpoints();
+    this.getDataBaseTypes();
+  },
+  methods: {
+    getEndpoints() {
+      this.$http({
+        method: "post",
+        url: "setting/getEndpoints",
+        data: JSON.stringify({}),
+        headers: {
+          "Content-Type": "application/json"
+        }
+      })
+        .then(resp => {
+          const respData = resp.data;
+          if (respData.returnCode === 1) {
+            // 請求成功
+            // console.log("respData.data.content = ", respData.data);
+            const results = respData.data;
+            this.list = [];
+
+            results.forEach(item => {
+              let newResult = { ...item };
+              this.list.push(newResult);
+            });
+          } else {
+            // 請求失敗
+            this.alertContent = "取得列表失敗";
+            this.alertVisible = true;
+          }
+        })
+        .catch(error => {
+          console.log(error);
+        });
+    },
+    getDataBaseTypes() {
+      this.$http({
+        method: "post",
+        url: "setting/getDataBaseTypes",
+        data: JSON.stringify({}),
+        headers: {
+          "Content-Type": "application/json"
+        }
+      })
+        .then(resp => {
+          const respData = resp.data;
+          if (respData.returnCode === 1) {
+            // console.log("dataBaseTypes = ", this.dataBaseTypes);
+            const results = respData.data;
+            this.dataBaseTypes = [];
+
+            results.forEach(item => {
+              let newResult = { name: item };
+              this.dataBaseTypes.push(newResult);
+            });
+          } else {
+            // 請求失敗
+            this.alertContent = "取得列表失敗";
+            this.alertVisible = true;
+          }
+        })
+        .catch(error => {
+          console.log(error);
+        });
+    },
+    saveEndpoint(input) {
+      this.$http({
+        method: "post",
+        url: "setting/saveEndpoint",
+        data: JSON.stringify({ ...input }),
+        headers: {
+          "Content-Type": "application/json"
+        }
+      })
+        .then(resp => {
+          const respData = resp.data;
+          if (respData.returnCode === 1) {
+            this.alertContent = "新增成功";
+            this.alertVisible = true;
+            this.getEndpoints();
+          } else {
+            // 請求失敗
+            this.alertContent = respData.returnMessage;
+            this.alertVisible = true;
+          }
+        })
+        .catch(error => {
+          console.log(error);
+        });
+    },
+    deleteEndpoint(id) {
+      this.$http({
+        method: "post",
+        url: "setting/deleteEndpoint",
+        params: {
+          id: id
+        },
+        headers: {
+          "Content-Type": "application/json"
+        }
+      })
+        .then(resp => {
+          const respData = resp.data;
+          if (respData.returnCode === 1) {
+            this.alertContent = "刪除成功";
+            this.alertVisible = true;
+            this.getEndpoints();
+          } else {
+            // 請求失敗
+            this.alertContent = respData.returnMessage;
+            this.alertVisible = true;
+          }
+        })
+        .catch(error => {
+          console.log(error);
+        });
+    }
+  }
 };
 </script>
+
+
+<style lang="scss" scoped>
+.md-card {
+  display: inline-block;
+  width: 400px;
+  margin: 10px;
+  vertical-align: top;
+}
+
+.md-dialog {
+  min-width: 500px;
+  padding: $padding;
+}
+
+.dialog-content {
+  min-width: 1200px;
+  height: 500px;
+  padding: $padding;
+  overflow: auto;
+
+  .md-scrollbar {
+    display: inline-grid;
+    padding: $padding;
+  }
+}
+</style>
+
+<style lang="scss" scoped>
+small {
+  display: block;
+}
+</style>
