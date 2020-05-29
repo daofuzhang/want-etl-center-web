@@ -322,7 +322,6 @@ export default {
                 };
                 this.groupOptions.push(groupOption);
               });
-              console.log(this.groupOptions);
             });
           } else {
             // 請求失敗
