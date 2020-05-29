@@ -453,6 +453,7 @@ export default {
         });
     },
     onJobAddClick(group, folder) {
+      this.dataJob = {};
       this.jobDialog.title = "Add Job";
       this.jobDialog.groupId = group.id;
       this.jobDialog.folderId = folder.id;
