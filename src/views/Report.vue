@@ -24,13 +24,13 @@
             <md-field>
               <label>Select int Last</label>
               <md-select v-model="search.lastTime">
+                <md-option></md-option>
                 <md-option
                   v-for="item in lastTimeOptions"
                   v-bind:key="item.key"
                   :value="item.value"
-                  >{{ item.name }}</md-option
-                ></md-select
-              >
+                >{{ item.name }}</md-option>
+              </md-select>
             </md-field>
           </div>
         </div>
@@ -55,44 +55,36 @@
             <md-field>
               <label>Group</label>
               <md-select v-model="search.group">
+                <md-option></md-option>
                 <md-option
                   v-for="item in groupOptions"
                   v-bind:key="item.key"
                   :value="item.value"
-                  >{{ item.name }}</md-option
-                ></md-select
-              >
+                >{{ item.name }}</md-option>
+              </md-select>
             </md-field>
           </div>
           <div class="md-layout-item md-size-30">
             <md-field>
               <label>Folder</label>
               <md-select v-model="search.folder">
+                <md-option></md-option>
                 <md-option
                   v-for="item in folderOptions"
                   v-bind:key="item.key"
                   :value="item.value"
-                  >{{ item.name }}</md-option
-                ></md-select
-              >
+                >{{ item.name }}</md-option>
+              </md-select>
             </md-field>
           </div>
         </div>
         <div class="md-layout md-gutter">
-          <div class="md-layout-item ">
-            <md-checkbox v-model="search.status" value="wait"
-              >Waiting</md-checkbox
-            >
-            <md-checkbox v-model="search.status" value="running"
-              >Running</md-checkbox
-            >
+          <div class="md-layout-item">
+            <md-checkbox v-model="search.status" value="wait">Waiting</md-checkbox>
+            <md-checkbox v-model="search.status" value="running">Running</md-checkbox>
             <md-checkbox v-model="search.status" value="done">Done</md-checkbox>
-            <md-checkbox v-model="search.status" value="interrupt"
-              >Interrupt</md-checkbox
-            >
-            <md-checkbox v-model="search.status" value="error"
-              >Error</md-checkbox
-            >
+            <md-checkbox v-model="search.status" value="interrupt">Interrupt</md-checkbox>
+            <md-checkbox v-model="search.status" value="error">Error</md-checkbox>
           </div>
         </div>
       </md-card-header>
@@ -109,10 +101,7 @@
             <md-table-head>Status</md-table-head>
             <md-table-head>Details</md-table-head>
           </md-table-row>
-          <md-table-row
-            v-for="(item, index) in dataJobLogList"
-            v-bind:key="item.jobId"
-          >
+          <md-table-row v-for="(item, index) in dataJobLogList" v-bind:key="item.jobId">
             <md-table-cell md-numeric>{{ index + 1 }}</md-table-cell>
             <md-table-cell>{{ item.jobId }}</md-table-cell>
             <md-table-cell>{{ item.description }}</md-table-cell>
@@ -129,9 +118,10 @@
                     (dataJobLog = item),
                     getJobLogDetail(item.recentLogs[0])
                 "
-                ><md-icon>details</md-icon></md-button
-              ></md-table-cell
-            >
+              >
+                <md-icon>details</md-icon>
+              </md-button>
+            </md-table-cell>
           </md-table-row>
         </md-table>
         <Pagination
@@ -172,42 +162,27 @@
             <div class="md-layout-item md-size-50">
               <md-field>
                 <label>Log ID</label>
-                <md-input
-                  v-model="dataJobLogDetail.jobLogId"
-                  :disabled="true"
-                ></md-input>
+                <md-input v-model="dataJobLogDetail.jobLogId" :disabled="true"></md-input>
               </md-field>
               <md-field>
                 <label>Status</label>
-                <md-input
-                  v-model="dataJobLogDetail.status"
-                  :disabled="true"
-                ></md-input>
+                <md-input v-model="dataJobLogDetail.status" :disabled="true"></md-input>
               </md-field>
             </div>
             <div class="md-layout-item md-size-50">
               <md-field>
                 <label>Start Time</label>
-                <md-input
-                  v-model="dataJobLogDetail.startTime"
-                  :disabled="true"
-                ></md-input>
+                <md-input v-model="dataJobLogDetail.startTime" :disabled="true"></md-input>
               </md-field>
               <md-field>
                 <label>End Time</label>
-                <md-input
-                  v-model="dataJobLogDetail.endTime"
-                  :disabled="true"
-                ></md-input>
+                <md-input v-model="dataJobLogDetail.endTime" :disabled="true"></md-input>
               </md-field>
             </div>
             <div class="md-layout-item md-size-100">
               <md-field>
                 <label>Parameter</label>
-                <md-textarea
-                  v-model="dataJobLogDetail.parameter"
-                  :disabled="true"
-                ></md-textarea>
+                <md-textarea v-model="dataJobLogDetail.parameter" :disabled="true"></md-textarea>
               </md-field>
               <span class="md-subheading">Log</span>
               <md-content class="md-scrollbar">
@@ -215,18 +190,14 @@
                   v-for="(line, index) in dataJobLogDetail.message"
                   v-bind:key="index"
                   v-bind:class="{ 'text-danger': line.type == 1 }"
-                >
-                  >{{ line.content }}</span
-                >
+                >>{{ line.content }}</span>
               </md-content>
             </div>
           </div>
         </md-content>
       </div>
       <md-dialog-actions>
-        <md-button class="md-primary" @click="showDialog = false"
-          >Close</md-button
-        >
+        <md-button class="md-primary" @click="showDialog = false">Close</md-button>
       </md-dialog-actions>
     </md-dialog>
   </div>
@@ -238,7 +209,7 @@ import { uuid } from "vue-uuid";
 export default {
   name: "TableBasic",
   components: {
-    Pagination,
+    Pagination
   },
   data() {
     return {
@@ -247,18 +218,18 @@ export default {
         {
           key: uuid.v4(),
           name: "5 min",
-          value: 300,
+          value: 300
         },
         {
           key: uuid.v4(),
           name: "10 min",
-          value: 600,
+          value: 600
         },
         {
           key: uuid.v4(),
           name: "30 min",
-          value: 3000,
-        },
+          value: 3000
+        }
       ],
       groupOptions: [],
       folderOptions: [],
@@ -269,7 +240,7 @@ export default {
         toTime: null,
         group: null,
         folder: null,
-        status: null,
+        status: null
       },
       dataGroupList: [],
       dataJobLogList: [],
@@ -279,11 +250,11 @@ export default {
       dataPageTotal: -1, // 紀錄總頁數
       dataPagination: {
         page: 1, // 所在頁碼
-        visible: true, // 是否顯示分頁
+        visible: true // 是否顯示分頁
       },
       showDialog: false,
       showNavigation: false,
-      showSidepanel: false,
+      showSidepanel: false
     };
   },
   created() {
@@ -292,8 +263,10 @@ export default {
   },
   watch: {
     "search.group"() {
+      this.search.group = this.search.group == false ? null : this.search.group;
       this.search.folder = null;
-      this.groupOptions.forEach((group) => {
+      this.folderOptions = [];
+      this.groupOptions.forEach(group => {
         if (this.search.group == group.value) {
           this.folderOptions = group.folderOptions;
           return;
@@ -302,11 +275,13 @@ export default {
       this.getJobLogList();
     },
     "search.folder"() {
+      this.search.folder =
+        this.search.folder == false ? null : this.search.folder;
       this.getJobLogList();
     },
     "search.status"() {
       this.getJobLogList();
-    },
+    }
   },
   methods: {
     getCurrentPage(value) {
@@ -318,10 +293,10 @@ export default {
         method: "post",
         url: "job/getGroups",
         headers: {
-          "Content-Type": "application/json",
-        },
+          "Content-Type": "application/json"
+        }
       })
-        .then((resp) => {
+        .then(resp => {
           const respData = resp.data;
           if (respData.returnCode === 1) {
             // 請求成功
@@ -329,13 +304,13 @@ export default {
             const results = respData.data;
             this.groupOptions = [];
             this.$nextTick(() => {
-              results.forEach((group) => {
+              results.forEach(group => {
                 let options = [];
-                group.folders.forEach((folder) => {
+                group.folders.forEach(folder => {
                   let folderOption = {
                     key: uuid.v4(),
                     name: folder.name,
-                    value: folder.id,
+                    value: folder.id
                   };
                   options.push(folderOption);
                 });
@@ -343,7 +318,7 @@ export default {
                   key: uuid.v4(),
                   name: group.name,
                   value: group.id,
-                  folderOptions: options,
+                  folderOptions: options
                 };
                 this.groupOptions.push(groupOption);
               });
@@ -355,7 +330,7 @@ export default {
             this.alertVisible = true;
           }
         })
-        .catch((error) => {
+        .catch(error => {
           console.log(error);
         });
     },
@@ -369,13 +344,13 @@ export default {
           folderId: this.search.folder,
           status: this.search.status,
           pageIndx: this.dataPagination.page,
-          pageSize: 10,
+          pageSize: 10
         }),
         headers: {
-          "Content-Type": "application/json",
-        },
+          "Content-Type": "application/json"
+        }
       })
-        .then((resp) => {
+        .then(resp => {
           const respData = resp.data;
           if (respData.returnCode === 1) {
             // 請求成功
@@ -389,7 +364,7 @@ export default {
               if (this.dataTotal > 0) {
                 this.dataPageTotal = respData.data.totalPage;
 
-                results.forEach((item) => {
+                results.forEach(item => {
                   let newResult = { ...item };
                   this.dataJobLogList.push(newResult);
                 });
@@ -403,7 +378,7 @@ export default {
             this.alertVisible = true;
           }
         })
-        .catch((error) => {
+        .catch(error => {
           console.log(error);
         });
     },
@@ -415,13 +390,13 @@ export default {
         method: "post",
         url: "report/getJobReportLog",
         params: {
-          jobLogId: item.jobLogId,
+          jobLogId: item.jobLogId
         },
         headers: {
-          "Content-Type": "application/json",
-        },
+          "Content-Type": "application/json"
+        }
       })
-        .then((resp) => {
+        .then(resp => {
           const respData = resp.data;
           if (respData.returnCode === 1) {
             // 請求成功
@@ -435,11 +410,11 @@ export default {
             this.alertVisible = true;
           }
         })
-        .catch((error) => {
+        .catch(error => {
           console.log(error);
         });
-    },
-  },
+    }
+  }
 };
 </script>
 <style lang="scss" scoped>
