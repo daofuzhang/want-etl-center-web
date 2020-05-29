@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="card-container">
-      <md-card v-for="(item) in list" v-bind:key="item.id">
+      <md-card v-for="(item) in endpointList" v-bind:key="item.id">
         <md-card-header>
           <md-card-header-text>
             <div class="md-title">{{item.name}}</div>
@@ -9,23 +9,22 @@
 
           <md-button
             @click="
-              (showDialog = true),
-                (endpoint = {...item})
+              onEditEndpointButtonClick(item)
             "
             class="md-icon-button md-plain"
           >
             <md-icon>edit</md-icon>
           </md-button>
           <md-dialog-confirm
-            :md-active.sync="active"
+            :md-active.sync="deleteDialog.active"
             md-title="確定要刪除?"
             md-confirm-text="確定"
             md-cancel-text="取消"
             @md-cancel="active = false"
-            @md-confirm="deleteEndpoint(item.id)"
+            @md-confirm="onDeleteEndpointDialogConfirm()"
           />
 
-          <md-button class="md-icon-button md-plain" @click="active = true">
+          <md-button class="md-icon-button md-plain" @click="onDeleteEndpointButtonClick(item.id)">
             <md-icon>delete</md-icon>
           </md-button>
         </md-card-header>
@@ -47,8 +46,7 @@
         <md-button
           class="md-fab md-primary"
           @click="
-              (showDialog = true),
-                (endpoint = {...item})
+              onEditEndpointButtonClick(item)
             "
         >
           <md-icon>add</md-icon>
@@ -56,21 +54,21 @@
       </md-speed-dial>
 
       <md-dialog-alert
-        :md-active.sync="alertVisible"
-        :md-content="alertContent"
+        :md-active.sync="alert.visible"
+        :md-content="alert.content"
         md-confirm-text="Close"
       />
 
-      <md-dialog :md-active.sync="showDialog">
+      <md-dialog :md-active.sync="editDialog.active">
         <md-dialog-content class="page-container md-layout-column">
           <md-field md-clearable>
             <label>Name</label>
-            <md-input v-model="endpoint.name"></md-input>
+            <md-input v-model="editDialog.endpoint.name"></md-input>
           </md-field>
 
           <md-field>
             <label>Type</label>
-            <md-select v-model="endpoint.type" name="type" id="type">
+            <md-select v-model="editDialog.endpoint.type" name="type" id="type">
               <md-option
                 v-for="(item) in dataBaseTypes"
                 v-bind:key="item.id"
@@ -79,60 +77,59 @@
             </md-select>
           </md-field>
 
-          <md-field v-show="endpoint.type != 'SAP - JCO'" md-clearable>
+          <md-field v-show="editDialog.endpoint.type != 'SAP - JCO'" md-clearable>
             <label>URL</label>
-            <md-input v-model="endpoint.url"></md-input>
+            <md-input v-model="editDialog.endpoint.url"></md-input>
           </md-field>
 
-          <md-field v-show="endpoint.type == 'SAP - JCO'" md-clearable>
+          <md-field v-show="editDialog.endpoint.type == 'SAP - JCO'" md-clearable>
             <label>ashost</label>
-            <md-input v-model="endpoint.ashost"></md-input>
+            <md-input v-model="editDialog.endpoint.ashost"></md-input>
           </md-field>
 
-          <md-field v-show="endpoint.type == 'SAP - JCO'" md-clearable>
+          <md-field v-show="editDialog.endpoint.type == 'SAP - JCO'" md-clearable>
             <label>client</label>
-            <md-input v-model="endpoint.client"></md-input>
+            <md-input v-model="editDialog.endpoint.client"></md-input>
           </md-field>
 
-          <md-field v-show="endpoint.type == 'SAP - JCO'" md-clearable>
+          <md-field v-show="editDialog.endpoint.type == 'SAP - JCO'" md-clearable>
             <label>sysnr</label>
-            <md-input v-model="endpoint.sysnr"></md-input>
+            <md-input v-model="editDialog.endpoint.sysnr"></md-input>
           </md-field>
 
-          <md-field v-show="endpoint.type == 'SAP - JCO'" md-clearable>
+          <md-field v-show="editDialog.endpoint.type == 'SAP - JCO'" md-clearable>
             <label>lang</label>
-            <md-input v-model="endpoint.lang"></md-input>
+            <md-input v-model="editDialog.endpoint.lang"></md-input>
           </md-field>
 
-          <md-field v-show="endpoint.type == 'SAP - JCO'" md-clearable>
+          <md-field v-show="editDialog.endpoint.type == 'SAP - JCO'" md-clearable>
             <label>peak_limit</label>
-            <md-input v-model="endpoint.peakLimit"></md-input>
+            <md-input v-model="editDialog.endpoint.peakLimit"></md-input>
           </md-field>
 
-          <md-field v-show="endpoint.type == 'SAP - JCO'" md-clearable>
+          <md-field v-show="editDialog.endpoint.type == 'SAP - JCO'" md-clearable>
             <label>pool_capacity</label>
-            <md-input v-model="endpoint.poolCapacity"></md-input>
+            <md-input v-model="editDialog.endpoint.poolCapacity"></md-input>
           </md-field>
 
           <md-field md-clearable>
             <label>User</label>
-            <md-input v-model="endpoint.user"></md-input>
+            <md-input v-model="editDialog.endpoint.user"></md-input>
           </md-field>
 
           <md-field>
             <label>Password</label>
-            <md-input v-model="endpoint.passwd" type="password"></md-input>
+            <md-input v-model="editDialog.endpoint.passwd" type="password"></md-input>
           </md-field>
 
           <md-dialog-actions>
             <md-button
               class="md-primary"
               @click="
-          (showDialog = false),
-          (saveEndpoint(endpoint))
+              onEditEndpointConfirm()
           "
             >Save</md-button>
-            <md-button class="md-primary" @click="showDialog = false">Close</md-button>
+            <md-button class="md-primary" @click="editDialog.active = false">Close</md-button>
           </md-dialog-actions>
         </md-dialog-content>
       </md-dialog>
@@ -140,20 +137,25 @@
   </div>
 </template>
 
-
-
 <script>
 export default {
   name: "RegularCards",
   data() {
     return {
-      list: [],
-      endpoint: {},
+      endpointList: [],
       dataBaseTypes: [],
-      showDialog: false,
-      active: false,
-      alertContent: "",
-      alertVisible: false
+      editDialog: {
+        endpoint: {},
+        active: false
+      },
+      deleteDialog: {
+        id: "",
+        active: false
+      },
+      alert: {
+        content: "",
+        visible: false
+      }
     };
   },
   created() {
@@ -161,6 +163,21 @@ export default {
     this.getDataBaseTypes();
   },
   methods: {
+    onEditEndpointButtonClick(item) {
+      this.editDialog.endpoint = { ...item };
+      this.editDialog.active = true;
+    },
+    onEditEndpointConfirm() {
+      this.editDialog.active = false;
+      this.saveEndpoint(this.editDialog.endpoint);
+    },
+    onDeleteEndpointButtonClick(id) {
+      this.deleteDialog.id = id;
+      this.deleteDialog.active = true;
+    },
+    onDeleteEndpointDialogConfirm() {
+      this.deleteEndpoint(this.deleteDialog.id);
+    },
     getEndpoints() {
       this.$http({
         method: "post",
@@ -176,16 +193,16 @@ export default {
             // 請求成功
             // console.log("respData.data.content = ", respData.data);
             const results = respData.data;
-            this.list = [];
+            this.endpointList = [];
 
             results.forEach(item => {
               let newResult = { ...item };
-              this.list.push(newResult);
+              this.endpointList.push(newResult);
             });
           } else {
             // 請求失敗
-            this.alertContent = "取得列表失敗";
-            this.alertVisible = true;
+            this.alert.content = "取得列表失敗";
+            this.alert.visible = true;
           }
         })
         .catch(error => {
@@ -214,8 +231,8 @@ export default {
             });
           } else {
             // 請求失敗
-            this.alertContent = "取得列表失敗";
-            this.alertVisible = true;
+            this.alert.content = "取得列表失敗";
+            this.alert.visible = true;
           }
         })
         .catch(error => {
@@ -234,13 +251,13 @@ export default {
         .then(resp => {
           const respData = resp.data;
           if (respData.returnCode === 1) {
-            this.alertContent = "新增成功";
-            this.alertVisible = true;
+            this.alert.content = "更新成功";
+            this.alert.visible = true;
             this.getEndpoints();
           } else {
             // 請求失敗
-            this.alertContent = respData.returnMessage;
-            this.alertVisible = true;
+            this.alert.content = respData.returnMessage;
+            this.alert.visible = true;
           }
         })
         .catch(error => {
@@ -261,13 +278,13 @@ export default {
         .then(resp => {
           const respData = resp.data;
           if (respData.returnCode === 1) {
-            this.alertContent = "刪除成功";
-            this.alertVisible = true;
+            this.alert.content = "刪除成功";
+            this.alert.visible = true;
             this.getEndpoints();
           } else {
             // 請求失敗
-            this.alertContent = respData.returnMessage;
-            this.alertVisible = true;
+            this.alert.content = respData.returnMessage;
+            this.alert.visible = true;
           }
         })
         .catch(error => {

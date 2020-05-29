@@ -20,9 +20,18 @@
                 <md-menu-item @click="onGroupEditClick(group)">Edit</md-menu-item>
                 <md-menu-item @click="onFolderAddClick(group)">Add Folder</md-menu-item>
                 <md-menu-item>Check Log</md-menu-item>
-                <md-menu-item @click="onGroupDeleteClick(group)">Delete</md-menu-item>
+                <md-menu-item @click="groupDeleteDialog.active = true">Delete</md-menu-item>
               </md-menu-content>
             </md-menu>
+
+            <md-dialog-confirm
+              :md-active.sync="groupDeleteDialog.active"
+              md-title="確定要刪除?"
+              md-confirm-text="確定"
+              md-cancel-text="取消"
+              @md-cancel="groupDeleteDialog.active = false"
+              @md-confirm="onGroupDeleteClick(group)"
+            />
           </div>
           <md-list slot="md-expand">
             <md-list-item md-expand v-for="(folder, index) in group.folders" v-bind:key="index">
@@ -43,9 +52,18 @@
                     <md-menu-item @click="onFolderEditClick(group, folder)">Edit</md-menu-item>
                     <md-menu-item @click="onJobAddClick(group, folder)">Add Job</md-menu-item>
                     <md-menu-item>Check Log</md-menu-item>
-                    <md-menu-item @click="onFolderDeleteClick(folder)">Delete</md-menu-item>
+                    <md-menu-item @click="folderDeleteDialog.active = true">Delete</md-menu-item>
                   </md-menu-content>
                 </md-menu>
+
+                <md-dialog-confirm
+                  :md-active.sync="folderDeleteDialog.active"
+                  md-title="確定要刪除?"
+                  md-confirm-text="確定"
+                  md-cancel-text="取消"
+                  @md-cancel="folderDeleteDialog.active = false"
+                  @md-confirm="onFolderDeleteClick(folder)"
+                />
               </div>
               <md-list slot="md-expand">
                 <md-list-item
@@ -73,8 +91,17 @@
                       <md-menu-content>
                         <md-menu-item @click="onJobEditClick(group, folder, job)">Edit</md-menu-item>
                         <md-menu-item>Check Log</md-menu-item>
-                        <md-menu-item @click="onJobDeleteClick(job)">Delete</md-menu-item>
+                        <md-menu-item @click="jobDeleteDialog.active = true">Delete</md-menu-item>
                       </md-menu-content>
+
+                      <md-dialog-confirm
+                        :md-active.sync="jobDeleteDialog.active"
+                        md-title="確定要刪除?"
+                        md-confirm-text="確定"
+                        md-cancel-text="取消"
+                        @md-cancel="jobDeleteDialog.active = false"
+                        @md-confirm="onJobDeleteClick(job)"
+                      />
                     </md-menu>
                   </div>
                 </md-list-item>
@@ -185,6 +212,14 @@
         <md-button class="md-primary" @click="onJobDialogSaveClick">Save</md-button>
       </md-dialog-actions>
     </md-dialog>
+
+    <div>
+      <md-dialog-alert
+        :md-active.sync="alert.visible"
+        :md-content="alert.content"
+        md-confirm-text="Close"
+      />
+    </div>
   </div>
 </template>
 
@@ -222,9 +257,22 @@ export default {
         title: "",
         memo: "",
         mailGroupIds: [],
-        location: ""
+        location: "",
       },
-      runJobIds: []
+      runJobIds: [],
+      groupDeleteDialog: {
+        active: false
+      },
+      folderDeleteDialog: {
+        active: false
+      },
+      jobDeleteDialog: {
+        active: false
+      },
+       alert: {
+        content: "",
+        visible: false
+      }
     };
   },
   created() {
@@ -255,8 +303,8 @@ export default {
             });
           } else {
             // 請求失敗
-            this.alertContent = "取得紀錄詳情失敗";
-            this.alertVisible = true;
+            this.alert.content = "取得紀錄詳情失敗";
+            this.alert.visible = true;
           }
         })
         .catch(error => {
@@ -286,8 +334,8 @@ export default {
             });
           } else {
             // 請求失敗
-            this.alertContent = "取得紀錄詳情失敗";
-            this.alertVisible = true;
+            this.alert.content = "取得紀錄詳情失敗";
+            this.alert.visible = true;
           }
         })
         .catch(error => {
@@ -328,11 +376,13 @@ export default {
             // 請求成功
             // console.log("respData.data.content = ", respData.data);
             const results = respData.data;
+            this.alert.content = "刪除成功";
+            this.alert.visible = true;
             this.getGroupList();
           } else {
             // 請求失敗
-            this.alertContent = "取得紀錄詳情失敗";
-            this.alertVisible = true;
+            this.alert.content = "取得紀錄詳情失敗";
+            this.alert.visible = true;
           }
         })
         .catch(error => {
@@ -363,8 +413,8 @@ export default {
             this.showGroupDialog = false;
           } else {
             // 請求失敗
-            this.alertContent = "取得紀錄詳情失敗";
-            this.alertVisible = true;
+            this.alert.content = "取得紀錄詳情失敗";
+            this.alert.visible = true;
           }
         })
         .catch(error => {
@@ -408,11 +458,13 @@ export default {
             // 請求成功
             // console.log("respData.data.content = ", respData.data);
             const results = respData.data;
+            this.alert.content = "刪除成功";
+            this.alert.visible = true;
             this.getGroupList();
           } else {
             // 請求失敗
-            this.alertContent = "取得紀錄詳情失敗";
-            this.alertVisible = true;
+            this.alert.content = "取得紀錄詳情失敗";
+            this.alert.visible = true;
           }
         })
         .catch(error => {
@@ -444,8 +496,8 @@ export default {
             this.showFolderDialog = false;
           } else {
             // 請求失敗
-            this.alertContent = "取得紀錄詳情失敗";
-            this.alertVisible = true;
+            this.alert.content = "取得紀錄詳情失敗";
+            this.alert.visible = true;
           }
         })
         .catch(error => {
@@ -496,8 +548,8 @@ export default {
             });
           } else {
             // 請求失敗
-            this.alertContent = "取得紀錄詳情失敗";
-            this.alertVisible = true;
+            this.alert.content = "取得紀錄詳情失敗";
+            this.alert.visible = true;
           }
         })
         .catch(error => {
@@ -521,11 +573,13 @@ export default {
             // 請求成功
             // console.log("respData.data.content = ", respData.data);
             const results = respData.data;
+            this.alert.content = "刪除成功";
+            this.alert.visible = true;
             this.getGroupList();
           } else {
             // 請求失敗
-            this.alertContent = "取得紀錄詳情失敗";
-            this.alertVisible = true;
+            this.alert.content = "取得紀錄詳情失敗";
+            this.alert.visible = true;
           }
         })
         .catch(error => {
@@ -558,8 +612,8 @@ export default {
             this.showJobDialog = false;
           } else {
             // 請求失敗
-            this.alertContent = "取得紀錄詳情失敗";
-            this.alertVisible = true;
+            this.alert.content = "取得紀錄詳情失敗";
+            this.alert.visible = true;
           }
         })
         .catch(error => {
@@ -604,8 +658,8 @@ export default {
               const results = respData.data;
             } else {
               // 請求失敗
-              this.alertContent = "取得紀錄詳情失敗";
-              this.alertVisible = true;
+              this.alert.content = "取得紀錄詳情失敗";
+              this.alert.visible = true;
             }
           })
           .catch(error => {

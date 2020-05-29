@@ -1,5 +1,11 @@
 <template>
   <div>
+    <md-dialog-alert
+      :md-active.sync="alert.visible"
+      :md-content="alert.content"
+      md-confirm-text="Close"
+    />
+
     <md-table md-card>
       <md-table-toolbar>
         <div class="md-toolbar-section-start">
@@ -91,6 +97,10 @@ export default {
       deleteDialog: {
         active: false,
         mailGroup: {}
+      },
+      alert: {
+        content: "",
+        visible: false
       }
     };
   },
@@ -141,8 +151,8 @@ export default {
             });
           } else {
             // 請求失敗
-            this.alertContent = "取得列表失敗";
-            this.alertVisible = true;
+            this.alert.content = "取得列表失敗";
+            this.alert.visible = true;
           }
         })
         .catch(error => {
@@ -171,8 +181,8 @@ export default {
             });
           } else {
             // 請求失敗
-            this.alertContent = "取得列表失敗";
-            this.alertVisible = true;
+            this.alert.content = "取得列表失敗";
+            this.alert.visible = true;
           }
         })
         .catch(error => {
@@ -191,13 +201,13 @@ export default {
         .then(resp => {
           const respData = resp.data;
           if (respData.returnCode === 1) {
-            this.alertContent = "新增成功";
-            this.alertVisible = true;
+            this.alert.content = "更新成功";
+            this.alert.visible = true;
             this.getMailGroups();
           } else {
             // 請求失敗
-            this.alertContent = respData.returnMessage;
-            this.alertVisible = true;
+            this.alert.content = respData.returnMessage;
+            this.alert.visible = true;
           }
         })
         .catch(error => {
@@ -218,13 +228,13 @@ export default {
         .then(resp => {
           const respData = resp.data;
           if (respData.returnCode === 1) {
-            this.alertContent = "刪除成功";
-            this.alertVisible = true;
+            this.alert.content = "刪除成功";
+            this.alert.visible = true;
             this.getMailGroups();
           } else {
             // 請求失敗
-            this.alertContent = respData.returnMessage;
-            this.alertVisible = true;
+            this.alert.content = respData.returnMessage;
+            this.alert.visible = true;
           }
         })
         .catch(error => {
