@@ -19,7 +19,6 @@ export default {
   data() {
     return {
       items: [
-        { name: "System" },
         { name: "User" },
         { name: "Endpoint" },
         { name: "Node" },
