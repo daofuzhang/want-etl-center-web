@@ -47,7 +47,7 @@
       <md-dialog-content class="page-container md-layout-column">
         <md-field md-clearable>
           <label>Id</label>
-          <md-input v-model="editDialog.user.id"></md-input>
+          <md-input readonly v-model="editDialog.user.id"></md-input>
         </md-field>
 
         <md-field md-clearable>
