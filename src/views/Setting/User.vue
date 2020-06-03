@@ -45,9 +45,9 @@
 
     <md-dialog :md-active.sync="editDialog.active">
       <md-dialog-content class="page-container md-layout-column">
-        <md-field md-clearable>
+        <md-field :md-clearable="editDialog.clearable">
           <label>Id</label>
-          <md-input readonly v-model="editDialog.user.id"></md-input>
+          <md-input :readonly="editDialog.isReadonly" v-model="editDialog.user.id"></md-input>
         </md-field>
 
         <md-field md-clearable>
@@ -85,7 +85,9 @@ export default {
     dataUserList: [],
     editDialog: {
       user: {},
-      active: false
+      active: false,
+      clearable: false,
+      isReadonly: false
     },
     deleteDialog: {
       id: "",
@@ -100,13 +102,24 @@ export default {
     this.getUsers();
   },
   methods: {
+    isNotNull(value) {
+      if (value == null) {
+        return false;
+      } else {
+        return true;
+      }
+    },
     onAddButtonClick() {
       this.editDialog.user = {};
       this.editDialog.active = true;
+      this.editDialog.clearable = true;
+      this.editDialog.isReadonly = false;
     },
     onEditUserButtonClick(item) {
       this.editDialog.user = { ...item };
       this.editDialog.active = true;
+      this.editDialog.clearable = false;
+      this.editDialog.isReadonly = true;
     },
     onEditUserConfirm() {
       this.editDialog.active = false;
