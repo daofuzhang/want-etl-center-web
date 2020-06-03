@@ -1,5 +1,11 @@
 <template>
   <md-card>
+    <md-card-header class="md-layout md-alignment-space-between">
+      <div class="md-layout-item md-title">#{{ index + 1 }}</div>
+      <md-button class="md-icon-button md-accent" @click="onDeleteButtonClick">
+        <md-icon>clear</md-icon>
+      </md-button>
+    </md-card-header>
     <md-card-content>
       <md-field>
         <label>Description</label>
@@ -7,10 +13,7 @@
       </md-field>
     </md-card-content>
     <md-card-expand>
-      <md-card-actions md-alignment="space-between">
-        <div>
-          <md-button class="md-raised md-accent" @click="onDeleteButtonClick">Delete</md-button>
-        </div>
+      <md-card-actions class="md-layout md-alignment-center">
         <md-card-expand-trigger>
           <md-button class="md-icon-button">
             <md-icon>keyboard_arrow_down</md-icon>
@@ -26,7 +29,8 @@
                 v-for="(type, index) in typeList"
                 v-bind:key="index"
                 :value="type.value"
-              >{{ type.name }}</md-option>
+                >{{ type.name }}</md-option
+              >
             </md-select>
           </md-field>
           <div class="md-layout md-gutter">
@@ -39,12 +43,13 @@
                     v-for="(server, index) in jdbcServerList"
                     v-bind:key="index"
                     :value="server.id"
-                  >{{ server.name }}</md-option>
+                    >{{ server.name }}</md-option
+                  >
                 </md-select>
               </md-field>
               <md-field v-if="['sync'].includes(dataTask.type)">
                 <label>Statement (SQL: Select)</label>
-                <md-input v-model="dataTask.statement"></md-input>
+                <md-textarea v-model="dataTask.statement"></md-textarea>
               </md-field>
               <md-field v-if="['jco'].includes(dataTask.type)">
                 <label>JCO Server</label>
@@ -53,7 +58,8 @@
                     v-for="(server, index) in jcoServerList"
                     v-bind:key="index"
                     :value="server.id"
-                  >{{ server.name }}</md-option>
+                    >{{ server.name }}</md-option
+                  >
                 </md-select>
               </md-field>
               <md-field v-if="['jco'].includes(dataTask.type)">
@@ -85,14 +91,23 @@
                     v-for="(server, index) in jdbcServerList"
                     v-bind:key="index"
                     :value="server.id"
-                  >{{ server.name }}</md-option>
+                    >{{ server.name }}</md-option
+                  >
                 </md-select>
               </md-field>
-              <md-field v-if="['sync', 'truncate', 'delete', 'jco'].includes(dataTask.type)">
+              <md-field
+                v-if="
+                  ['sync', 'truncate', 'delete', 'jco'].includes(dataTask.type)
+                "
+              >
                 <label>Database</label>
                 <md-input v-model="dataTask.database"></md-input>
               </md-field>
-              <md-field v-if="['sync', 'truncate', 'delete', 'jco'].includes(dataTask.type)">
+              <md-field
+                v-if="
+                  ['sync', 'truncate', 'delete', 'jco'].includes(dataTask.type)
+                "
+              >
                 <label>Table</label>
                 <md-input v-model="dataTask.table"></md-input>
               </md-field>
@@ -125,6 +140,9 @@
 export default {
   name: "TextFields",
   props: {
+    index: {
+      type: Number,
+    },
     current: {
       type: Object,
       default: function() {
@@ -140,16 +158,16 @@ export default {
           database: "",
           table: "",
           condition: "",
-          rules: ""
+          rules: "",
         };
-      }
+      },
     },
     jdbcServerList: {
-      type: Array
+      type: Array,
     },
     jcoServerList: {
-      type: Array
-    }
+      type: Array,
+    },
   },
   data() {
     return {
@@ -160,14 +178,14 @@ export default {
         { name: "DELETE", value: "delete" },
         { name: "CALL", value: "call" },
         { name: "CHECK", value: "check" },
-        { name: "JCO", value: "jco" }
-      ]
+        { name: "JCO", value: "jco" },
+      ],
     };
   },
   methods: {
     onDeleteButtonClick: function() {
       this.$emit("delete", this.dataTask);
-    }
-  }
+    },
+  },
 };
 </script>

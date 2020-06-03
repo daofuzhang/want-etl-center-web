@@ -6,7 +6,7 @@ const StylelintPlugin = require("stylelint-webpack-plugin");
 module.exports = {
   publicPath: "./",
   devServer: {
-    port: 9002,
+    port: 9700,
     open: true,
     https: false,
   },
