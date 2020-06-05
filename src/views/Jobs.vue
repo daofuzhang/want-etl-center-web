@@ -117,7 +117,7 @@
 
     <md-dialog-confirm
       :md-active.sync="showRunJobDialog"
-      md-title="立即執行?"
+      :md-title="runJobDialogTitle"
       md-confirm-text="Yes"
       md-cancel-text="No"
       @md-confirm="onRunJobDialogConfirm"
@@ -233,6 +233,7 @@ export default {
       dataJob: {},
       expandSingle: false,
       showRunJobDialog: false,
+      runJobDialogTitle: "",
       showGroupDialog: false,
       groupDialog: {
         id: "",
@@ -257,7 +258,7 @@ export default {
         title: "",
         memo: "",
         mailGroupIds: [],
-        location: "",
+        location: ""
       },
       runJobIds: [],
       groupDeleteDialog: {
@@ -269,7 +270,7 @@ export default {
       jobDeleteDialog: {
         active: false
       },
-       alert: {
+      alert: {
         content: "",
         visible: false
       }
@@ -637,6 +638,7 @@ export default {
       this.runJobIds = [];
       this.filterJobIds(obj);
       this.showRunJobDialog = true;
+      this.runJobDialogTitle = "立即執行 '" + obj.name + "' ?";
     },
     onRunJobDialogConfirm() {
       this.runJobIds.forEach(jobId => {
