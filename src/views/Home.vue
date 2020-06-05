@@ -50,12 +50,12 @@ export default {
 <style lang="scss" scoped>
 .page-container {
   position: relative;
-  min-height: 300px;
   overflow: hidden;
   border: 1px solid rgba(#000, 0.12);
 }
 
 .md-content {
-  padding: 16px;
+  min-height: calc(100vh - 64px - #{$padding} * 2);
+  padding: #{$padding};
 }
 </style>

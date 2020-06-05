@@ -65,6 +65,15 @@ const router = new Router({
           component: () => import("@/views/Report.vue"),
         },
         {
+          path: "/Report/History",
+          name: "History",
+          meta: {
+            title: "History",
+          },
+          component: () => import("@/views/Report/History.vue"),
+          props: true,
+        },
+        {
           path: "/Setting",
           name: "Setting",
           meta: {

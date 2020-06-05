@@ -13,7 +13,7 @@
             </md-field>
           </div>
         </div>
-        <div class="md-layout md-gutter">
+        <!-- <div class="md-layout md-gutter">
           <div class="md-layout-item">
             <md-radio v-model="timeType" :value="0">Select int Last</md-radio>
             <md-radio v-model="timeType" :value="1">Duration</md-radio>
@@ -29,7 +29,8 @@
                   v-for="item in lastTimeOptions"
                   v-bind:key="item.key"
                   :value="item.value"
-                >{{ item.name }}</md-option>
+                  >{{ item.name }}</md-option
+                >
               </md-select>
             </md-field>
           </div>
@@ -49,7 +50,7 @@
               <md-input v-model="search.toTime"></md-input>
             </md-field>
           </div>
-        </div>
+        </div> -->
         <div class="md-layout md-gutter">
           <div class="md-layout-item md-size-30">
             <md-field>
@@ -60,7 +61,8 @@
                   v-for="item in groupOptions"
                   v-bind:key="item.key"
                   :value="item.value"
-                >{{ item.name }}</md-option>
+                  >{{ item.name }}</md-option
+                >
               </md-select>
             </md-field>
           </div>
@@ -73,18 +75,27 @@
                   v-for="item in folderOptions"
                   v-bind:key="item.key"
                   :value="item.value"
-                >{{ item.name }}</md-option>
+                  >{{ item.name }}</md-option
+                >
               </md-select>
             </md-field>
           </div>
         </div>
         <div class="md-layout md-gutter">
           <div class="md-layout-item">
-            <md-checkbox v-model="search.status" value="wait">Waiting</md-checkbox>
-            <md-checkbox v-model="search.status" value="running">Running</md-checkbox>
+            <md-checkbox v-model="search.status" value="wait"
+              >Waiting</md-checkbox
+            >
+            <md-checkbox v-model="search.status" value="running"
+              >Running</md-checkbox
+            >
             <md-checkbox v-model="search.status" value="done">Done</md-checkbox>
-            <md-checkbox v-model="search.status" value="interrupt">Interrupt</md-checkbox>
-            <md-checkbox v-model="search.status" value="error">Error</md-checkbox>
+            <md-checkbox v-model="search.status" value="interrupt"
+              >Interrupt</md-checkbox
+            >
+            <md-checkbox v-model="search.status" value="error"
+              >Error</md-checkbox
+            >
           </div>
         </div>
       </md-card-header>
@@ -93,33 +104,51 @@
           <md-table-row>
             <md-table-head md-numeric>#</md-table-head>
             <md-table-head>Job ID</md-table-head>
-            <md-table-head>Description</md-table-head>
+            <md-table-head>Name</md-table-head>
             <md-table-head>Log ID</md-table-head>
             <md-table-head>Start Time</md-table-head>
             <md-table-head>End Time</md-table-head>
             <md-table-head>Duration</md-table-head>
             <md-table-head>Status</md-table-head>
-            <md-table-head>Details</md-table-head>
+            <md-table-head>Action</md-table-head>
           </md-table-row>
-          <md-table-row v-for="(item, index) in dataJobLogList" v-bind:key="item.jobId">
+          <md-table-row
+            v-for="(item, index) in dataJobLogList"
+            v-bind:key="item.jobId"
+          >
             <md-table-cell md-numeric>{{ index + 1 }}</md-table-cell>
             <md-table-cell>{{ item.jobId }}</md-table-cell>
-            <md-table-cell>{{ item.description }}</md-table-cell>
+            <md-table-cell>{{ item.name }}</md-table-cell>
             <md-table-cell>{{ item.jobLogId }}</md-table-cell>
             <md-table-cell>{{ item.startTime }}</md-table-cell>
             <md-table-cell>{{ item.endTime }}</md-table-cell>
-            <md-table-cell>{{ item.duration }}</md-table-cell>
-            <md-table-cell>{{ item.status }}</md-table-cell>
+            <md-table-cell
+              ><span class="text-duration">{{
+                item.duration
+              }}</span></md-table-cell
+            >
+            <md-table-cell
+              ><span
+                v-bind:class="{
+                  'text-running': item.status == 'running',
+                  'text-warning': item.status == 'interrupt',
+                  'text-danger': item.status == 'error',
+                }"
+                >{{ item.status }}</span
+              ></md-table-cell
+            >
             <md-table-cell>
               <md-button
-                @click="
-                  (showDialog = true),
-                    (showNavigation = false),
-                    (dataJobLog = item),
-                    getJobLogDetail(item.recentLogs[0])
-                "
+                class="md-icon-button"
+                @click="onJobLogDetailButtonClick(item)"
               >
                 <md-icon>details</md-icon>
+              </md-button>
+              <md-button
+                class="md-icon-button"
+                @click="onHistoryButtonClick(item)"
+              >
+                <md-icon>history</md-icon>
               </md-button>
             </md-table-cell>
           </md-table-row>
@@ -133,83 +162,24 @@
         ></Pagination>
       </md-card-content>
     </md-card>
-    <md-dialog :md-active.sync="showDialog">
-      <div class="page-container md-layout-column">
-        <md-toolbar class="md-transparent" md-elevation="0">
-          <md-button class="md-icon-button" @click="showNavigation = true">
-            <md-icon>menu</md-icon>
-          </md-button>
-          <span class="md-title">Sync Log</span>
-        </md-toolbar>
-
-        <md-drawer :md-active.sync="showNavigation" md-swipeable>
-          <md-toolbar class="md-transparent" md-elevation="0">
-            <span class="md-title">History</span>
-          </md-toolbar>
-          <md-list>
-            <md-list-item
-              v-for="item in dataJobLog.recentLogs"
-              v-bind:key="item.jobLogId"
-              @click="(showNavigation = false), getJobLogDetail(item)"
-            >
-              <span class="md-list-item-text">{{ item.jobLogId }}</span>
-            </md-list-item>
-          </md-list>
-        </md-drawer>
-
-        <md-content class="dialog-content">
-          <div class="md-layout md-gutter">
-            <div class="md-layout-item md-size-50">
-              <md-field>
-                <label>Log ID</label>
-                <md-input v-model="dataJobLogDetail.jobLogId" :disabled="true"></md-input>
-              </md-field>
-              <md-field>
-                <label>Status</label>
-                <md-input v-model="dataJobLogDetail.status" :disabled="true"></md-input>
-              </md-field>
-            </div>
-            <div class="md-layout-item md-size-50">
-              <md-field>
-                <label>Start Time</label>
-                <md-input v-model="dataJobLogDetail.startTime" :disabled="true"></md-input>
-              </md-field>
-              <md-field>
-                <label>End Time</label>
-                <md-input v-model="dataJobLogDetail.endTime" :disabled="true"></md-input>
-              </md-field>
-            </div>
-            <div class="md-layout-item md-size-100">
-              <md-field>
-                <label>Parameter</label>
-                <md-textarea v-model="dataJobLogDetail.parameter" :disabled="true"></md-textarea>
-              </md-field>
-              <span class="md-subheading">Log</span>
-              <md-content class="md-scrollbar">
-                <span
-                  v-for="(line, index) in dataJobLogDetail.message"
-                  v-bind:key="index"
-                  v-bind:class="{ 'text-danger': line.type == 1 }"
-                >>{{ line.content }}</span>
-              </md-content>
-            </div>
-          </div>
-        </md-content>
-      </div>
-      <md-dialog-actions>
-        <md-button class="md-primary" @click="showDialog = false">Close</md-button>
-      </md-dialog-actions>
-    </md-dialog>
+    <JobLogDetailDialog
+      :jobLogId="jobLogDetailDialog.jobLogId"
+      :showDialog="jobLogDetailDialog.showDialog"
+      @closeDialog="jobLogDetailDialog.showDialog = false"
+    >
+    </JobLogDetailDialog>
   </div>
 </template>
 
 <script>
 import Pagination from "@/components/common/BasePagination";
+import JobLogDetailDialog from "@/views/Report/JobLogDetailDialog.vue";
 import { uuid } from "vue-uuid";
 export default {
   name: "TableBasic",
   components: {
-    Pagination
+    Pagination,
+    JobLogDetailDialog,
   },
   data() {
     return {
@@ -218,18 +188,18 @@ export default {
         {
           key: uuid.v4(),
           name: "5 min",
-          value: 300
+          value: 300,
         },
         {
           key: uuid.v4(),
           name: "10 min",
-          value: 600
+          value: 600,
         },
         {
           key: uuid.v4(),
           name: "30 min",
-          value: 3000
-        }
+          value: 3000,
+        },
       ],
       groupOptions: [],
       folderOptions: [],
@@ -240,33 +210,40 @@ export default {
         toTime: null,
         group: null,
         folder: null,
-        status: null
+        status: null,
       },
       dataGroupList: [],
       dataJobLogList: [],
-      dataJobLog: {},
-      dataJobLogDetail: {},
       dataTotal: -1, // 紀錄總數
       dataPageTotal: -1, // 紀錄總頁數
       dataPagination: {
         page: 1, // 所在頁碼
-        visible: true // 是否顯示分頁
+        visible: true, // 是否顯示分頁
       },
-      showDialog: false,
-      showNavigation: false,
-      showSidepanel: false
+      jobLogDetailDialog: {
+        jobLogId: "",
+        showDialog: false,
+      },
+      timerGetJobLogList: null,
     };
   },
   created() {
     this.getGroupList();
     this.getJobLogList();
   },
+  mounted() {
+    this.timerSetGetJobLogList();
+  },
+  beforeRouteLeave(to, from, next) {
+    this.timerClearGetJobLogList();
+    next();
+  },
   watch: {
     "search.group"() {
       this.search.group = this.search.group == false ? null : this.search.group;
       this.search.folder = null;
       this.folderOptions = [];
-      this.groupOptions.forEach(group => {
+      this.groupOptions.forEach((group) => {
         if (this.search.group == group.value) {
           this.folderOptions = group.folderOptions;
           return;
@@ -281,9 +258,24 @@ export default {
     },
     "search.status"() {
       this.getJobLogList();
-    }
+    },
   },
   methods: {
+    timerSetGetJobLogList() {
+      this.timerGetJobLogList = setInterval(() => {
+        this.getJobLogList();
+      }, 5000);
+    },
+    timerClearGetJobLogList() {
+      if (this.timerGetJobLogList) clearInterval(this.timerGetJobLogList);
+    },
+    onJobLogDetailButtonClick(item) {
+      this.jobLogDetailDialog.jobLogId = item.jobLogId;
+      this.jobLogDetailDialog.showDialog = true;
+    },
+    onHistoryButtonClick(item) {
+      this.$router.push({ name: "History", params: { current: item } });
+    },
     getCurrentPage(value) {
       this.dataPagination.page = value;
       this.getLogList();
@@ -293,10 +285,10 @@ export default {
         method: "post",
         url: "job/getGroups",
         headers: {
-          "Content-Type": "application/json"
-        }
+          "Content-Type": "application/json",
+        },
       })
-        .then(resp => {
+        .then((resp) => {
           const respData = resp.data;
           if (respData.returnCode === 1) {
             // 請求成功
@@ -304,13 +296,13 @@ export default {
             const results = respData.data;
             this.groupOptions = [];
             this.$nextTick(() => {
-              results.forEach(group => {
+              results.forEach((group) => {
                 let options = [];
-                group.folders.forEach(folder => {
+                group.folders.forEach((folder) => {
                   let folderOption = {
                     key: uuid.v4(),
                     name: folder.name,
-                    value: folder.id
+                    value: folder.id,
                   };
                   options.push(folderOption);
                 });
@@ -318,7 +310,7 @@ export default {
                   key: uuid.v4(),
                   name: group.name,
                   value: group.id,
-                  folderOptions: options
+                  folderOptions: options,
                 };
                 this.groupOptions.push(groupOption);
               });
@@ -329,7 +321,7 @@ export default {
             this.alertVisible = true;
           }
         })
-        .catch(error => {
+        .catch((error) => {
           console.log(error);
         });
     },
@@ -343,13 +335,13 @@ export default {
           folderId: this.search.folder,
           status: this.search.status,
           pageIndx: this.dataPagination.page,
-          pageSize: 10
+          pageSize: 10,
         }),
         headers: {
-          "Content-Type": "application/json"
-        }
+          "Content-Type": "application/json",
+        },
       })
-        .then(resp => {
+        .then((resp) => {
           const respData = resp.data;
           if (respData.returnCode === 1) {
             // 請求成功
@@ -363,7 +355,7 @@ export default {
               if (this.dataTotal > 0) {
                 this.dataPageTotal = respData.data.totalPage;
 
-                results.forEach(item => {
+                results.forEach((item) => {
                   let newResult = { ...item };
                   this.dataJobLogList.push(newResult);
                 });
@@ -377,65 +369,14 @@ export default {
             this.alertVisible = true;
           }
         })
-        .catch(error => {
+        .catch((error) => {
           console.log(error);
         });
     },
-    getJobLogDetail(item) {
-      if (item == undefined) {
-        return;
-      }
-      this.$http({
-        method: "post",
-        url: "report/getJobReportLog",
-        params: {
-          jobLogId: item.jobLogId
-        },
-        headers: {
-          "Content-Type": "application/json"
-        }
-      })
-        .then(resp => {
-          const respData = resp.data;
-          if (respData.returnCode === 1) {
-            // 請求成功
-            // console.log("respData.data.content = ", respData.data);
-            this.$nextTick(() => {
-              this.dataJobLogDetail = { ...respData.data };
-            });
-          } else {
-            // 請求失敗
-            this.alertContent = "取得紀錄詳情失敗";
-            this.alertVisible = true;
-          }
-        })
-        .catch(error => {
-          console.log(error);
-        });
-    }
-  }
+  },
 };
 </script>
 <style lang="scss" scoped>
-.white-space {
-  white-space: pre-wrap;
-}
-
-.text-danger {
-  color: red;
-}
-
-.dialog-content {
-  height: 500px;
-  padding: $padding;
-  overflow: auto;
-
-  .md-scrollbar {
-    display: inline-grid;
-    padding: $padding;
-  }
-}
-
 .md-card {
   padding: 10px;
   margin: 10px;

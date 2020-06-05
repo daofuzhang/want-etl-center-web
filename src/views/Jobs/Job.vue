@@ -20,9 +20,27 @@
           >
         </div>
         <div class="block">
+          <h3>Dynamic</h3>
+          <div class="inset-container" style="display: block; min-height: 116px; overflow: auto;">
+             <Dynamic
+                style="margin: 10px;"
+                v-for="(dynamic, index) in dataJob.dynamics"
+                :key="dynamic.key"
+                :index="index"
+                :current="dynamic"
+                @delete="deleteDynamic"
+              ></Dynamic>
+            <md-speed-dial class="md-bottom-right">
+              <md-button class="md-fab md-primary" @click="addDynamic">
+                <md-icon>add</md-icon>
+              </md-button>
+            </md-speed-dial>
+          </div>
+        </div>
+        <div class="block">
           <h3>Task</h3>
           <md-switch v-model="enabled">Drag</md-switch>
-          <div class="task-container">
+          <div class="inset-container">
             <draggable
               style="display: block; min-height: 116px; overflow: auto;"
               :list="dataJob.tasks"
@@ -60,12 +78,14 @@
 
 <script>
 import draggable from "vuedraggable";
+import Dynamic from "@/views/Jobs/Dynamic.vue";
 import Task from "@/views/Jobs/Task.vue";
 import { uuid } from "vue-uuid";
 export default {
   name: "Job",
   components: {
     draggable,
+    Dynamic,
     Task,
   },
   props: {
@@ -115,7 +135,7 @@ export default {
               results.tasks.forEach((task) => {
                 task.key = uuid.v4();
               });
-              this.dataJob = results;
+              this.dataJob = { ...results };
             });
           } else {
             // 請求失敗
@@ -182,6 +202,12 @@ export default {
           console.log(error);
         });
     },
+    addDynamic: function() {
+      this.dataJob.dynamics.push({ key: uuid.v4() });
+    },
+    deleteDynamic: function(dynamic) { 
+      this.dataJob.dynamics.splice(this.dataJob.dynamics.indexOf(dynamic), 1);
+    },
     addTask: function() {
       this.dataJob.tasks.push({ key: uuid.v4() });
     },
@@ -233,7 +259,7 @@ export default {
   margin-top: 10px;
 }
 
-.task-container {
+.inset-container {
   position: relative;
   box-shadow: inset 0 3px 1px -2px rgba(0, 0, 0, 0.2), inset 0 2px 2px 0 rgba(0, 0, 0, 0.14), inset 0 1px 5px 0 rgba(255, 178, 178, 0.12);
 }

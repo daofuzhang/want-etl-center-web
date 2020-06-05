@@ -695,7 +695,7 @@ export default {
   display: flex;
   flex-direction: column;
   width: calc(100vw - #{$list-width} - #{$padding} * 4);
-  min-width: 600px;
+  min-width: 540px;
   padding: $padding;
 }
 </style>
@@ -715,18 +715,18 @@ export default {
 
       > .md-icon:last-child {
         position: absolute;
-        left: 16px;
+        left: #{$padding};
         margin-left: unset;
       }
 
       > .md-list-action:last-of-type {
         position: absolute;
-        right: 16px;
+        right: #{$padding};
       }
     }
 
     .md-list-item-expand {
-      padding-left: 16px;
+      padding-left: #{$padding};
 
       .md-list-item-content {
         > .md-icon:first-child {
@@ -735,13 +735,13 @@ export default {
 
         > .md-icon:last-child {
           position: absolute;
-          left: 16px;
+          left: #{$padding};
           margin-left: unset;
         }
 
         > .md-list-action:last-of-type {
           position: absolute;
-          right: 16px;
+          right: #{$padding};
         }
       }
     }

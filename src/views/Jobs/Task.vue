@@ -118,7 +118,7 @@
               </md-field>
               <md-field v-if="['check'].includes(dataTask.type)">
                 <label>Statement (SQL: Select)</label>
-                <md-input v-model="dataTask.statement"></md-input>
+                <md-textarea v-model="dataTask.statement"></md-textarea>
               </md-field>
               <md-field v-if="['check'].includes(dataTask.type)">
                 <label>Check Rules (JSON)</label>
@@ -127,6 +127,14 @@
               <md-field v-if="['call'].includes(dataTask.type)">
                 <label>Statement (SQL: Call)</label>
                 <md-input v-model="dataTask.statement"></md-input>
+              </md-field>
+              <md-field
+                v-if="
+                  ['sync', 'jco'].includes(dataTask.type)
+                "
+              >
+                <label>Core Size</label>
+                <md-input v-model="dataTask.coreSize"></md-input>
               </md-field>
             </div>
           </div>
@@ -159,6 +167,7 @@ export default {
           table: "",
           condition: "",
           rules: "",
+          coreSize: "",
         };
       },
     },

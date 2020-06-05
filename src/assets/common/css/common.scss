@@ -57,5 +57,25 @@ $main-body-color: #fafafa;
   }
 }
 
-$list-width: 320px;
-$padding: 16px;
+$list-width: 360px;
+$padding: 10px;
+$text-warning: #ff8c1e;
+$text-danger: #fe3234;
+$text-success: #31d332;
+$text-duration: #2f7fd4;
+
+.text-running {
+  color: $text-success;
+}
+
+.text-warning {
+  color: $text-warning;
+}
+
+.text-danger {
+  color: $text-danger;
+}
+
+.text-duration {
+  color: $text-duration;
+}
