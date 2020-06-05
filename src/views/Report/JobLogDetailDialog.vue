@@ -8,12 +8,10 @@
       <md-content class="dialog-content">
         <md-tabs md-dynamic-height>
           <md-tab md-label="Parameter">
-            <md-content class="md-scrollbar">
-              <span class="parameter">{{ dataJobLogDetail.parameter }}</span>
-            </md-content>
+              <json-viewer :value="dataJobLogDetail.parameter" :expand-depth=3></json-viewer>
           </md-tab>
           <md-tab md-label="Log">
-            <md-content class="md-scrollbar">
+            <md-content class="log">
               <span
                 v-for="(line, index) in dataJobLogDetail.message"
                 v-bind:key="index"
@@ -31,6 +29,7 @@
   </div>
 </template>
 <script>
+
 export default {
   name: "JobLogDetailDialog",
   props: {
@@ -45,7 +44,9 @@ export default {
   data() {
     return {
       show: false,
-      dataJobLogDetail: {},
+      dataJobLogDetail: {
+        parameter: {}
+      },
       timerGetJobLogList: null,
     };
   },
@@ -101,6 +102,7 @@ export default {
             // console.log("respData.data.content = ", respData.data);
             this.$nextTick(() => {
               this.dataJobLogDetail = { ...respData.data };
+              console.log(this.dataJobLogDetail);
             });
           } else {
             // 請求失敗
@@ -121,12 +123,12 @@ export default {
 }
 
 .dialog-content {
-  min-width: 800px;
-  min-height: 600px;
+  width: 1000px;
+  height: 600px;
   padding: $padding;
   overflow: auto;
 
-  .md-scrollbar {
+  .log {
     display: inline-grid;
     padding: $padding;
   }

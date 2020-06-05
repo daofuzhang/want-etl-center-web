@@ -66,9 +66,9 @@
                 <label>Function</label>
                 <md-input v-model="dataTask.function"></md-input>
               </md-field>
-              <md-field v-if="['jco'].includes(dataTask.importForm)">
+              <md-field v-if="['jco'].includes(dataTask.type)">
                 <label>Input Table (JSON)</label>
-                <md-input v-model="dataTask.input_table"></md-input>
+                <md-textarea v-model="dataTask.importForm"></md-textarea>
               </md-field>
             </div>
             <div class="md-layout-item md-size-50">
@@ -114,7 +114,7 @@
 
               <md-field v-if="['delete'].includes(dataTask.type)">
                 <label>Condition (SQL: Where)</label>
-                <md-input v-model="dataTask.condition"></md-input>
+                <md-textarea v-model="dataTask.condition"></md-textarea>
               </md-field>
               <md-field v-if="['check'].includes(dataTask.type)">
                 <label>Statement (SQL: Select)</label>
@@ -122,11 +122,11 @@
               </md-field>
               <md-field v-if="['check'].includes(dataTask.type)">
                 <label>Check Rules (JSON)</label>
-                <md-input v-model="dataTask.rules"></md-input>
+                <md-textarea v-model="dataTask.rules"></md-textarea>
               </md-field>
               <md-field v-if="['call'].includes(dataTask.type)">
                 <label>Statement (SQL: Call)</label>
-                <md-input v-model="dataTask.statement"></md-input>
+                <md-textarea v-model="dataTask.statement"></md-textarea>
               </md-field>
               <md-field
                 v-if="

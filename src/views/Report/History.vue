@@ -20,7 +20,7 @@
             <md-table-cell>{{ item.jobLogId }}</md-table-cell>
             <md-table-cell>{{ item.startTime }}</md-table-cell>
             <md-table-cell>{{ item.endTime }}</md-table-cell>
-             <md-table-cell
+            <md-table-cell
               ><span
                 v-bind:class="{
                   'text-running': item.status == 'running',
@@ -31,7 +31,10 @@
               ></md-table-cell
             >
             <md-table-cell>
-              <md-button @click="onJobLogDetailButtonClick(item)">
+              <md-button
+                class="md-icon-button"
+                @click="onJobLogDetailButtonClick(item)"
+              >
                 <md-icon>details</md-icon>
               </md-button>
             </md-table-cell>

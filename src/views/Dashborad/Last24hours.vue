@@ -41,7 +41,10 @@
               ></md-table-cell
             >
             <md-table-cell>
-              <md-button @click="onJobLogDetailButtonClick(item)">
+              <md-button
+                class="md-icon-button"
+                @click="onJobLogDetailButtonClick(item)"
+              >
                 <md-icon>details</md-icon>
               </md-button>
             </md-table-cell>
@@ -98,7 +101,10 @@
               ></md-table-cell
             >
             <md-table-cell>
-              <md-button @click="onJobLogDetailButtonClick(item)">
+              <md-button
+                class="md-icon-button"
+                @click="onJobLogDetailButtonClick(item)"
+              >
                 <md-icon>details</md-icon>
               </md-button>
             </md-table-cell>
@@ -155,7 +161,10 @@
               ></md-table-cell
             >
             <md-table-cell>
-              <md-button @click="onJobLogDetailButtonClick(item)">
+              <md-button
+                class="md-icon-button"
+                @click="onJobLogDetailButtonClick(item)"
+              >
                 <md-icon>details</md-icon>
               </md-button>
             </md-table-cell>
@@ -216,7 +225,7 @@ export default {
         jobLogId: "",
         showDialog: false,
       },
-      timerGetJobLogList: null
+      timerGetJobLogList: null,
     };
   },
   created() {
