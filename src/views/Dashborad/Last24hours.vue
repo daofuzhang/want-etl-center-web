@@ -47,6 +47,12 @@
               >
                 <md-icon>details</md-icon>
               </md-button>
+              <md-button
+                class="md-icon-button"
+                @click="onJobStopButtonClick(item)"
+              >
+                <md-icon>stop</md-icon>
+              </md-button>
             </md-table-cell>
           </md-table-row>
         </md-table>
@@ -186,6 +192,14 @@
       @closeDialog="jobLogDetailDialog.showDialog = false"
     >
     </JobLogDetailDialog>
+
+    <md-dialog-confirm
+      :md-active.sync="stopJobDialog.active"
+      :md-title="stopJobDialog.title"
+      md-confirm-text="Yes"
+      md-cancel-text="No"
+      @md-confirm="onStopJobDialogConfirm"
+    />
   </div>
 </template>
 
@@ -225,6 +239,11 @@ export default {
         jobLogId: "",
         showDialog: false,
       },
+      stopJobDialog: {
+        active: false,
+        title: "",
+        jobLogId: null,
+      },
       timerGetJobLogList: null,
     };
   },
@@ -254,6 +273,38 @@ export default {
     onJobLogDetailButtonClick(item) {
       this.jobLogDetailDialog.jobLogId = item.jobLogId;
       this.jobLogDetailDialog.showDialog = true;
+    },
+    onJobStopButtonClick(item) {
+      this.stopJobDialog.title = "立即停止'" + item.name + "'?";
+      this.stopJobDialog.jobLogId = item.jobLogId;
+      this.stopJobDialog.active = true;
+    },
+    onStopJobDialogConfirm() {
+      this.$http({
+        method: "post",
+        url: "job/stop",
+        params: {
+          jobLogId: this.stopJobDialog.jobLogId,
+        },
+        headers: {
+          "Content-Type": "application/json",
+        },
+      })
+        .then((resp) => {
+          const respData = resp.data;
+          if (respData.returnCode === 1) {
+            // 請求成功
+            // console.log("respData.data.content = ", respData.data);
+            const results = respData.data;
+          } else {
+            // 請求失敗
+            this.alert.content = "取得紀錄詳情失敗";
+            this.alert.visible = true;
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
     },
     getRunningJobLogCurrentPage(value) {
       this.dataRunningJobLogPagination.page = value;
