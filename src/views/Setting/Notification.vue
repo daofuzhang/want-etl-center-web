@@ -80,16 +80,35 @@
       @md-cancel="deleteDialog.active = false"
       @md-confirm="onDeleteDialogConfirm()"
     />
+
+    <Pagination
+      @pagination-page-current="getCurrentPage"
+      :total="dataTotal"
+      :pageTotal="dataPageTotal"
+      :current="dataPagination.page"
+      :visible="dataPagination.visible"
+    ></Pagination>
   </div>
 </template>
 
 <script>
+import Pagination from "@/components/common/BasePagination";
+
 export default {
-  name: "AutocompleteTemplate",
+  name: "notification",
+  components: {
+    Pagination
+  },
   data() {
     return {
       dataMailGroupList: [],
       dataMailList: [],
+      dataTotal: -1, // 紀錄總數
+      dataPageTotal: -1, // 紀錄總頁數
+      dataPagination: {
+        page: 1, // 所在頁碼
+        visible: true // 是否顯示分頁
+      },
       editDialog: {
         active: false,
         mailGroup: {}
@@ -109,6 +128,10 @@ export default {
     this.getMails();
   },
   methods: {
+    getCurrentPage(value) {
+      this.dataPagination.page = value;
+      this.getMailGroups();
+    },
     onAddButtonClick() {
       this.editDialog.mailGroup = {};
       this.editDialog.active = true;
@@ -133,7 +156,10 @@ export default {
       this.$http({
         method: "post",
         url: "setting/getMailGroups",
-        data: JSON.stringify({}),
+        data: JSON.stringify({
+          pageIndex: this.dataPagination.page,
+          pageSize: 10
+        }),
         headers: {
           "Content-Type": "application/json"
         }
@@ -142,12 +168,22 @@ export default {
           const respData = resp.data;
           if (respData.returnCode === 1) {
             // console.log("respData.data.content = ", respData.data);
-            const results = respData.data;
+            const results = respData.data.content;
             this.dataMailGroupList = [];
 
-            results.forEach(item => {
-              let newResult = { ...item };
-              this.dataMailGroupList.push(newResult);
+            this.$nextTick(() => {
+              this.dataTotal = respData.data.totalElements;
+
+              if (this.dataTotal > 0) {
+                this.dataPageTotal = respData.data.totalPage;
+
+                results.forEach(item => {
+                  let newResult = { ...item };
+                  this.dataMailGroupList.push(newResult);
+                });
+
+                this.dataPagination.visible = true;
+              }
             });
           } else {
             // 請求失敗

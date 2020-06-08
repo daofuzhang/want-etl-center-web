@@ -75,12 +75,25 @@
       @md-cancel="deleteDialog.active = false"
       @md-confirm="onDeleteUserDialogConfirm()"
     />
+
+    <Pagination
+      @pagination-page-current="getCurrentPage"
+      :total="dataTotal"
+      :pageTotal="dataPageTotal"
+      :current="dataPagination.page"
+      :visible="dataPagination.visible"
+    ></Pagination>
   </div>
 </template>
 
 <script>
+import Pagination from "@/components/common/BasePagination";
+
 export default {
-  name: "ErrorsMessages",
+  name: "User",
+  components: {
+    Pagination
+  },
   data: () => ({
     dataUserList: [],
     editDialog: {
@@ -88,6 +101,12 @@ export default {
       active: false,
       clearable: false,
       isReadonly: false
+    },
+    dataTotal: -1, // 紀錄總數
+    dataPageTotal: -1, // 紀錄總頁數
+    dataPagination: {
+      page: 1, // 所在頁碼
+      visible: true // 是否顯示分頁
     },
     deleteDialog: {
       id: "",
@@ -102,6 +121,10 @@ export default {
     this.getUsers();
   },
   methods: {
+    getCurrentPage(value) {
+      this.dataPagination.page = value;
+      this.getUsers();
+    },
     isNotNull(value) {
       if (value == null) {
         return false;
@@ -136,7 +159,10 @@ export default {
       this.$http({
         method: "post",
         url: "setting/getUsers",
-        data: JSON.stringify({}),
+        data: JSON.stringify({
+          pageIndex: this.dataPagination.page,
+          pageSize: 10
+        }),
         headers: {
           "Content-Type": "application/json"
         }
@@ -145,12 +171,22 @@ export default {
           const respData = resp.data;
           if (respData.returnCode === 1) {
             // console.log("respData.data.content = ", respData.data);
-            const results = respData.data;
+            const results = respData.data.content;
             this.dataUserList = [];
 
-            results.forEach(item => {
-              let newResult = { ...item };
-              this.dataUserList.push(newResult);
+            this.$nextTick(() => {
+              this.dataTotal = respData.data.totalElements;
+
+              if (this.dataTotal > 0) {
+                this.dataPageTotal = respData.data.totalPage;
+
+                results.forEach(item => {
+                  let newResult = { ...item };
+                  this.dataUserList.push(newResult);
+                });
+
+                this.dataPagination.visible = true;
+              }
             });
           } else {
             // 請求失敗
