@@ -55,7 +55,7 @@ export default {
 }
 
 .md-content {
-  min-height: calc(100vh - 64px - #{$padding} * 2);
+  min-height: calc(100vh - 64px);
   padding: #{$padding};
 }
 </style>
