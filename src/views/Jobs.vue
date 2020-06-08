@@ -316,6 +316,10 @@ export default {
       this.$http({
         method: "post",
         url: "setting/getMailGroups",
+        data: JSON.stringify({
+          pageIndex: 1,
+          pageSize: 10000
+        }),
         headers: {
           "Content-Type": "application/json"
         }
@@ -325,7 +329,7 @@ export default {
           if (respData.returnCode === 1) {
             // 請求成功
             // console.log("respData.data.content = ", respData.data);
-            const results = respData.data;
+            const results = respData.data.content;
             this.dataMailGrouplist = [];
             this.$nextTick(() => {
               results.forEach(item => {
