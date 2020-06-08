@@ -122,13 +122,13 @@ const router = new Router({
 });
 router.beforeEach((to, from, next) => {
   const authorization = localStorage.getItem("authorization");
-  if (process.env.NODE_ENV === "development") {
-    axios.defaults.baseURL = process.env.VUE_APP_API_BASE_URL;
-  } else {
+  if (process.env.NODE_ENV === "docker" || !process.env.VUE_APP_API_BASE_URL) {
     let protocol = window.location.protocol;
     let hostname = window.location.hostname;
     let url = protocol + "//" + hostname + ":9600/want-etl-center/";
     axios.defaults.baseURL = url;
+  } else {
+    axios.defaults.baseURL = process.env.VUE_APP_API_BASE_URL;
   }
   axios.defaults.headers.authorization = authorization;
   axios.interceptors.response.use(
