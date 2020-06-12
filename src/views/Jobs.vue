@@ -6,38 +6,57 @@
           <md-icon>add</md-icon>
           <span class="md-list-item-title">Add Group</span>
         </md-list-item>
-        <md-list-item md-expand v-for="(group, index) in dataGrouplist" v-bind:key="index">
+        <md-list-item
+          md-expand
+          v-for="(group, index) in dataGrouplist"
+          v-bind:key="index"
+        >
           <span class="md-list-item-title">{{ group.name }}</span>
           <div class="md-list-action">
-            <md-button class="md-icon-button" v-on:click.stop="onRunJobClick(group)">
+            <md-button
+              class="md-icon-button"
+              v-on:click.stop="onRunJobClick(group)"
+            >
               <md-icon>offline_bolt</md-icon>
             </md-button>
             <md-menu md-direction="bottom-start">
-              <md-button class="md-icon-button" v-on:click.stop="onItemActionClick" md-menu-trigger>
+              <md-button
+                class="md-icon-button"
+                v-on:click.stop="onItemActionClick"
+                md-menu-trigger
+              >
                 <md-icon>more_vert</md-icon>
               </md-button>
               <md-menu-content>
-                <md-menu-item @click="onGroupEditClick(group)">Edit</md-menu-item>
-                <md-menu-item @click="onFolderAddClick(group)">Add Folder</md-menu-item>
-                <md-menu-item>Check Log</md-menu-item>
-                <md-menu-item @click="groupDeleteDialog.active = true">Delete</md-menu-item>
+                <md-menu-item @click="onGroupEditClick(group)"
+                  >Edit</md-menu-item
+                >
+                <md-menu-item @click="onFolderAddClick(group)"
+                  >Add Folder</md-menu-item
+                >
+                <md-menu-item
+                  @click="
+                    (groupDeleteDialog.active = true)(
+                      (groupDeleteDialog.group = group)
+                    )
+                  "
+                  >Delete</md-menu-item
+                >
               </md-menu-content>
             </md-menu>
-
-            <md-dialog-confirm
-              :md-active.sync="groupDeleteDialog.active"
-              md-title="確定要刪除?"
-              md-confirm-text="確定"
-              md-cancel-text="取消"
-              @md-cancel="groupDeleteDialog.active = false"
-              @md-confirm="onGroupDeleteClick(group)"
-            />
           </div>
           <md-list slot="md-expand">
-            <md-list-item md-expand v-for="(folder, index) in group.folders" v-bind:key="index">
+            <md-list-item
+              md-expand
+              v-for="(folder, index) in group.folders"
+              v-bind:key="index"
+            >
               <span class="md-list-item-title">{{ folder.name }}</span>
               <div class="md-list-action">
-                <md-button class="md-icon-button" v-on:click.stop="onRunJobClick(folder)">
+                <md-button
+                  class="md-icon-button"
+                  v-on:click.stop="onRunJobClick(folder)"
+                >
                   <md-icon>offline_bolt</md-icon>
                 </md-button>
                 <md-menu md-direction="bottom-start" :md-close-on-click="false">
@@ -49,21 +68,22 @@
                     <md-icon>more_vert</md-icon>
                   </md-button>
                   <md-menu-content>
-                    <md-menu-item @click="onFolderEditClick(group, folder)">Edit</md-menu-item>
-                    <md-menu-item @click="onJobAddClick(group, folder)">Add Job</md-menu-item>
-                    <md-menu-item>Check Log</md-menu-item>
-                    <md-menu-item @click="folderDeleteDialog.active = true">Delete</md-menu-item>
+                    <md-menu-item @click="onFolderEditClick(group, folder)"
+                      >Edit</md-menu-item
+                    >
+                    <md-menu-item @click="onJobAddClick(group, folder)"
+                      >Add Job</md-menu-item
+                    >
+                    <md-menu-item
+                      @click="
+                        (folderDeleteDialog.active = true)(
+                          (folderDeleteDialog.folder = folder)
+                        )
+                      "
+                      >Delete</md-menu-item
+                    >
                   </md-menu-content>
                 </md-menu>
-
-                <md-dialog-confirm
-                  :md-active.sync="folderDeleteDialog.active"
-                  md-title="確定要刪除?"
-                  md-confirm-text="確定"
-                  md-cancel-text="取消"
-                  @md-cancel="folderDeleteDialog.active = false"
-                  @md-confirm="onFolderDeleteClick(folder)"
-                />
               </div>
               <md-list slot="md-expand">
                 <md-list-item
@@ -72,12 +92,13 @@
                   v-bind:key="index"
                 >
                   <router-link :to="{ name: 'Job', params: { id: job.jobId } }">
-                    {{
-                    job.name
-                    }}
+                    {{ job.name }}
                   </router-link>
                   <div class="md-list-action">
-                    <md-button class="md-icon-button" v-on:click.stop="onRunJobClick(job)">
+                    <md-button
+                      class="md-icon-button"
+                      v-on:click.stop="onRunJobClick(job)"
+                    >
                       <md-icon>offline_bolt</md-icon>
                     </md-button>
                     <md-menu md-direction="bottom-start">
@@ -89,19 +110,19 @@
                         <md-icon>more_vert</md-icon>
                       </md-button>
                       <md-menu-content>
-                        <md-menu-item @click="onJobEditClick(group, folder, job)">Edit</md-menu-item>
-                        <md-menu-item>Check Log</md-menu-item>
-                        <md-menu-item @click="jobDeleteDialog.active = true">Delete</md-menu-item>
+                        <md-menu-item
+                          @click="onJobEditClick(group, folder, job)"
+                          >Edit</md-menu-item
+                        >
+                        <md-menu-item
+                          @click="
+                            (jobDeleteDialog.active = true)(
+                              (jobDeleteDialog.job = job)
+                            )
+                          "
+                          >Delete</md-menu-item
+                        >
                       </md-menu-content>
-
-                      <md-dialog-confirm
-                        :md-active.sync="jobDeleteDialog.active"
-                        md-title="確定要刪除?"
-                        md-confirm-text="確定"
-                        md-cancel-text="取消"
-                        @md-cancel="jobDeleteDialog.active = false"
-                        @md-confirm="onJobDeleteClick(job)"
-                      />
                     </md-menu>
                   </div>
                 </md-list-item>
@@ -124,7 +145,7 @@
     />
 
     <md-dialog :md-active.sync="showGroupDialog">
-      <md-dialog-title>{{groupDialog.title}}</md-dialog-title>
+      <md-dialog-title>{{ groupDialog.title }}</md-dialog-title>
       <md-dialog-content>
         <md-field>
           <label>Name</label>
@@ -141,17 +162,23 @@
               v-for="(mailGroup, index) in dataMailGrouplist"
               v-bind:key="index"
               :value="mailGroup.id"
-            >{{mailGroup.name}}</md-option>
+              >{{ mailGroup.name }}</md-option
+            >
           </md-select>
         </md-field>
       </md-dialog-content>
       <md-dialog-actions>
-        <md-button class="md-primary" @click="showGroupDialog = false">Cancel</md-button>
-        <md-button class="md-primary" @click="onGroupDialogSaveClick">Save</md-button>
+        <md-button class="md-primary" @click="showGroupDialog = false"
+          >Cancel</md-button
+        >
+        <md-button class="md-primary" @click="onGroupDialogSaveClick"
+          >Save</md-button
+        >
       </md-dialog-actions>
     </md-dialog>
+
     <md-dialog :md-active.sync="showFolderDialog">
-      <md-dialog-title>{{folderDialog.title}}</md-dialog-title>
+      <md-dialog-title>{{ folderDialog.title }}</md-dialog-title>
       <md-dialog-content>
         <md-field>
           <label>Name</label>
@@ -168,7 +195,8 @@
               v-for="(mailGroup, index) in dataMailGrouplist"
               v-bind:key="index"
               :value="mailGroup.id"
-            >{{mailGroup.name}}</md-option>
+              >{{ mailGroup.name }}</md-option
+            >
           </md-select>
         </md-field>
         <md-field>
@@ -177,12 +205,17 @@
         </md-field>
       </md-dialog-content>
       <md-dialog-actions>
-        <md-button class="md-primary" @click="showFolderDialog = false">Cancel</md-button>
-        <md-button class="md-primary" @click="onFolderDialogSaveClick">Save</md-button>
+        <md-button class="md-primary" @click="showFolderDialog = false"
+          >Cancel</md-button
+        >
+        <md-button class="md-primary" @click="onFolderDialogSaveClick"
+          >Save</md-button
+        >
       </md-dialog-actions>
     </md-dialog>
+
     <md-dialog :md-active.sync="showJobDialog">
-      <md-dialog-title>{{jobDialog.title}}</md-dialog-title>
+      <md-dialog-title>{{ jobDialog.title }}</md-dialog-title>
       <md-dialog-content>
         <md-field>
           <label>Name</label>
@@ -199,7 +232,8 @@
               v-for="(mailGroup, index) in dataMailGrouplist"
               v-bind:key="index"
               :value="mailGroup.id"
-            >{{mailGroup.name}}</md-option>
+              >{{ mailGroup.name }}</md-option
+            >
           </md-select>
         </md-field>
         <md-field>
@@ -208,18 +242,47 @@
         </md-field>
       </md-dialog-content>
       <md-dialog-actions>
-        <md-button class="md-primary" @click="showJobDialog = false">Cancel</md-button>
-        <md-button class="md-primary" @click="onJobDialogSaveClick">Save</md-button>
+        <md-button class="md-primary" @click="showJobDialog = false"
+          >Cancel</md-button
+        >
+        <md-button class="md-primary" @click="onJobDialogSaveClick"
+          >Save</md-button
+        >
       </md-dialog-actions>
     </md-dialog>
 
-    <div>
-      <md-dialog-alert
-        :md-active.sync="alert.visible"
-        :md-content="alert.content"
-        md-confirm-text="Close"
-      />
-    </div>
+    <md-dialog-confirm
+      :md-active.sync="groupDeleteDialog.active"
+      md-title="確定要刪除?"
+      md-confirm-text="確定"
+      md-cancel-text="取消"
+      @md-cancel="groupDeleteDialog.active = false"
+      @md-confirm="onGroupDeleteClick(groupDeleteDialog.group)"
+    ></md-dialog-confirm>
+
+    <md-dialog-confirm
+      :md-active.sync="folderDeleteDialog.active"
+      md-title="確定要刪除?"
+      md-confirm-text="確定"
+      md-cancel-text="取消"
+      @md-cancel="folderDeleteDialog.active = false"
+      @md-confirm="onFolderDeleteClick(folderDeleteDialog.folder)"
+    ></md-dialog-confirm>
+
+    <md-dialog-confirm
+      :md-active.sync="jobDeleteDialog.active"
+      md-title="確定要刪除?"
+      md-confirm-text="確定"
+      md-cancel-text="取消"
+      @md-cancel="jobDeleteDialog.active = false"
+      @md-confirm="onJobDeleteClick(jobDeleteDialog.job)"
+    ></md-dialog-confirm>
+
+    <md-dialog-alert
+      :md-active.sync="alert.visible"
+      :md-content="alert.content"
+      md-confirm-text="Close"
+    />
   </div>
 </template>
 
@@ -239,7 +302,7 @@ export default {
         id: "",
         title: "",
         memo: "",
-        mailGroupIds: []
+        mailGroupIds: [],
       },
       showFolderDialog: false,
       folderDialog: {
@@ -248,7 +311,7 @@ export default {
         title: "",
         memo: "",
         mailGroupIds: [],
-        location: ""
+        location: "",
       },
       showJobDialog: false,
       jobDialog: {
@@ -258,22 +321,25 @@ export default {
         title: "",
         memo: "",
         mailGroupIds: [],
-        location: ""
+        location: "",
       },
       runJobIds: [],
       groupDeleteDialog: {
-        active: false
+        active: false,
+        groupId: "",
       },
       folderDeleteDialog: {
-        active: false
+        active: false,
+        folder: "",
       },
       jobDeleteDialog: {
-        active: false
+        active: false,
+        jobId: "",
       },
       alert: {
         content: "",
-        visible: false
-      }
+        visible: false,
+      },
     };
   },
   created() {
@@ -286,10 +352,10 @@ export default {
         method: "post",
         url: "job/getGroups",
         headers: {
-          "Content-Type": "application/json"
-        }
+          "Content-Type": "application/json",
+        },
       })
-        .then(resp => {
+        .then((resp) => {
           const respData = resp.data;
           if (respData.returnCode === 1) {
             // 請求成功
@@ -297,7 +363,7 @@ export default {
             const results = respData.data;
             this.dataGrouplist = [];
             this.$nextTick(() => {
-              results.forEach(item => {
+              results.forEach((item) => {
                 let newResult = { ...item };
                 this.dataGrouplist.push(newResult);
               });
@@ -308,7 +374,7 @@ export default {
             this.alert.visible = true;
           }
         })
-        .catch(error => {
+        .catch((error) => {
           console.log(error);
         });
     },
@@ -318,13 +384,13 @@ export default {
         url: "setting/getMailGroups",
         data: JSON.stringify({
           pageIndex: 1,
-          pageSize: 10000
+          pageSize: 10000,
         }),
         headers: {
-          "Content-Type": "application/json"
-        }
+          "Content-Type": "application/json",
+        },
       })
-        .then(resp => {
+        .then((resp) => {
           const respData = resp.data;
           if (respData.returnCode === 1) {
             // 請求成功
@@ -332,7 +398,7 @@ export default {
             const results = respData.data.content;
             this.dataMailGrouplist = [];
             this.$nextTick(() => {
-              results.forEach(item => {
+              results.forEach((item) => {
                 let newResult = { ...item };
                 this.dataMailGrouplist.push(newResult);
               });
@@ -343,7 +409,7 @@ export default {
             this.alert.visible = true;
           }
         })
-        .catch(error => {
+        .catch((error) => {
           console.log(error);
         });
     },
@@ -369,13 +435,13 @@ export default {
         method: "post",
         url: "job/deleteGroup",
         params: {
-          groupId: group.id
+          groupId: group.id,
         },
         headers: {
-          "Content-Type": "application/json"
-        }
+          "Content-Type": "application/json",
+        },
       })
-        .then(resp => {
+        .then((resp) => {
           const respData = resp.data;
           if (respData.returnCode === 1) {
             // 請求成功
@@ -390,7 +456,7 @@ export default {
             this.alert.visible = true;
           }
         })
-        .catch(error => {
+        .catch((error) => {
           console.log(error);
         });
     },
@@ -402,13 +468,13 @@ export default {
           id: this.groupDialog.id,
           mailGroupIds: this.groupDialog.mailGroupIds,
           memo: this.groupDialog.memo,
-          name: this.groupDialog.name
+          name: this.groupDialog.name,
         }),
         headers: {
-          "Content-Type": "application/json"
-        }
+          "Content-Type": "application/json",
+        },
       })
-        .then(resp => {
+        .then((resp) => {
           const respData = resp.data;
           if (respData.returnCode === 1) {
             // 請求成功
@@ -422,7 +488,7 @@ export default {
             this.alert.visible = true;
           }
         })
-        .catch(error => {
+        .catch((error) => {
           console.log(error);
         });
     },
@@ -451,13 +517,13 @@ export default {
         method: "post",
         url: "job/deleteFolder",
         params: {
-          folderId: folder.id
+          folderId: folder.id,
         },
         headers: {
-          "Content-Type": "application/json"
-        }
+          "Content-Type": "application/json",
+        },
       })
-        .then(resp => {
+        .then((resp) => {
           const respData = resp.data;
           if (respData.returnCode === 1) {
             // 請求成功
@@ -472,7 +538,7 @@ export default {
             this.alert.visible = true;
           }
         })
-        .catch(error => {
+        .catch((error) => {
           console.log(error);
         });
     },
@@ -485,13 +551,13 @@ export default {
           folderId: this.folderDialog.id,
           mailGroupIds: this.folderDialog.mailGroupIds,
           memo: this.folderDialog.memo,
-          name: this.folderDialog.name
+          name: this.folderDialog.name,
         }),
         headers: {
-          "Content-Type": "application/json"
-        }
+          "Content-Type": "application/json",
+        },
       })
-        .then(resp => {
+        .then((resp) => {
           const respData = resp.data;
           if (respData.returnCode === 1) {
             // 請求成功
@@ -505,7 +571,7 @@ export default {
             this.alert.visible = true;
           }
         })
-        .catch(error => {
+        .catch((error) => {
           console.log(error);
         });
     },
@@ -526,13 +592,13 @@ export default {
         method: "post",
         url: "job/getJob",
         params: {
-          jobId: job.jobId
+          jobId: job.jobId,
         },
         headers: {
-          "Content-Type": "application/json"
-        }
+          "Content-Type": "application/json",
+        },
       })
-        .then(resp => {
+        .then((resp) => {
           const respData = resp.data;
           if (respData.returnCode === 1) {
             // 請求成功
@@ -557,7 +623,7 @@ export default {
             this.alert.visible = true;
           }
         })
-        .catch(error => {
+        .catch((error) => {
           console.log(error);
         });
     },
@@ -566,13 +632,13 @@ export default {
         method: "post",
         url: "job/deleteJob",
         params: {
-          jobId: job.jobId
+          jobId: job.jobId,
         },
         headers: {
-          "Content-Type": "application/json"
-        }
+          "Content-Type": "application/json",
+        },
       })
-        .then(resp => {
+        .then((resp) => {
           const respData = resp.data;
           if (respData.returnCode === 1) {
             // 請求成功
@@ -587,7 +653,7 @@ export default {
             this.alert.visible = true;
           }
         })
-        .catch(error => {
+        .catch((error) => {
           console.log(error);
         });
     },
@@ -601,13 +667,13 @@ export default {
           memo: this.jobDialog.memo,
           name: this.jobDialog.name,
           groupId: this.jobDialog.groupId,
-          folderId: this.jobDialog.folderId
+          folderId: this.jobDialog.folderId,
         }),
         headers: {
-          "Content-Type": "application/json"
-        }
+          "Content-Type": "application/json",
+        },
       })
-        .then(resp => {
+        .then((resp) => {
           const respData = resp.data;
           if (respData.returnCode === 1) {
             // 請求成功
@@ -621,17 +687,17 @@ export default {
             this.alert.visible = true;
           }
         })
-        .catch(error => {
+        .catch((error) => {
           console.log(error);
         });
     },
     filterJobIds(obj) {
       if (obj.folders) {
-        obj.folders.forEach(folder => {
+        obj.folders.forEach((folder) => {
           this.filterJobIds(folder);
         });
       } else if (obj.jobs) {
-        obj.jobs.forEach(job => {
+        obj.jobs.forEach((job) => {
           this.filterJobIds(job);
         });
       } else {
@@ -645,18 +711,18 @@ export default {
       this.runJobDialogTitle = "立即執行 '" + obj.name + "' ?";
     },
     onRunJobDialogConfirm() {
-      this.runJobIds.forEach(jobId => {
+      this.runJobIds.forEach((jobId) => {
         this.$http({
           method: "post",
           url: "job/start",
           params: {
-            jobId: jobId
+            jobId: jobId,
           },
           headers: {
-            "Content-Type": "application/json"
-          }
+            "Content-Type": "application/json",
+          },
         })
-          .then(resp => {
+          .then((resp) => {
             const respData = resp.data;
             if (respData.returnCode === 1) {
               // 請求成功
@@ -668,12 +734,12 @@ export default {
               this.alert.visible = true;
             }
           })
-          .catch(error => {
+          .catch((error) => {
             console.log(error);
           });
       });
-    }
-  }
+    },
+  },
 };
 </script>
 
