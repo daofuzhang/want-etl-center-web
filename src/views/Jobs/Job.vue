@@ -10,7 +10,7 @@
         <div class="block">
           <h3>Error Control</h3>
           <md-radio v-model="dataJob.strategy" value="continues">Continue</md-radio>
-          <md-radio v-model="dataJob.strategy" value="interrupt">Interrupt</md-radio>
+          <md-radio v-model="dataJob.strategy" value="interrupted">Interrupt</md-radio>
         </div>
         <div class="block">
           <h3>Dynamic</h3>
