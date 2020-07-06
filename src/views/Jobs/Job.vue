@@ -12,6 +12,10 @@
           <md-radio v-model="dataJob.strategy" value="continues">Continue</md-radio>
           <md-radio v-model="dataJob.strategy" value="interrupt">Interrupt</md-radio>
         </div>
+
+        <div class="block">
+          <md-checkbox v-model="dataJob.sendBatchLogger">Send Batch Logger</md-checkbox>
+        </div>
         <div class="block">
           <h3>Dynamic</h3>
           <div class="inset-container" style="display: block; min-height: 116px; overflow: auto;">

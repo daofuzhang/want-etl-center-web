@@ -105,6 +105,10 @@ const router = new Router({
               path: "/Setting/Notification",
               name: "Notification",
               component: () => import("@/views/Setting/Notification.vue"),
+            }, {
+              path: "/Setting/BatchLogger",
+              name: "BatchLogger",
+              component: () => import("@/views/Setting/BatchLogger.vue"),
             },
           ],
         },

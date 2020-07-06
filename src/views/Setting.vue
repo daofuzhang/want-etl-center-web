@@ -22,7 +22,8 @@ export default {
         { name: "User" },
         { name: "Endpoint" },
         { name: "Node" },
-        { name: "Notification" }
+        { name: "Notification" },
+        { name: "BatchLogger" }
       ]
     };
   },
