@@ -13,9 +13,15 @@
           <md-radio v-model="dataJob.strategy" value="interrupted">Interrupt</md-radio>
         </div>
 
+        <md-field>
+          <label>Batch Func Id</label>
+          <md-input v-model="dataJob.batchFuncId"></md-input>
+        </md-field>
+
         <div class="block">
           <md-checkbox v-model="dataJob.sendBatchLogger">Send Batch Logger</md-checkbox>
         </div>
+
         <div class="block">
           <h3>Dynamic</h3>
           <div class="inset-container" style="display: block; min-height: 116px; overflow: auto;">
