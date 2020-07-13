@@ -163,6 +163,7 @@
       </md-card-content>
     </md-card>
     <JobLogDetailDialog
+      :jobId="jobLogDetailDialog.jobId"
       :jobLogId="jobLogDetailDialog.jobLogId"
       :showDialog="jobLogDetailDialog.showDialog"
       @closeDialog="jobLogDetailDialog.showDialog = false"
@@ -270,6 +271,7 @@ export default {
       if (this.timerGetJobLogList) clearInterval(this.timerGetJobLogList);
     },
     onJobLogDetailButtonClick(item) {
+      this.jobLogDetailDialog.jobId = item.jobId;
       this.jobLogDetailDialog.jobLogId = item.jobLogId;
       this.jobLogDetailDialog.showDialog = true;
     },

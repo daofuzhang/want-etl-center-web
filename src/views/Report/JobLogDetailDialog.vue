@@ -20,6 +20,11 @@
               >
             </md-content>
           </md-tab>
+          <md-tab md-label="Manual">
+              <md-field>
+                <md-textarea v-model="manualCommand" md-autogrow></md-textarea>
+              </md-field>
+          </md-tab>
         </md-tabs>
       </md-content>
       <md-dialog-actions>
@@ -33,6 +38,9 @@
 export default {
   name: "JobLogDetailDialog",
   props: {
+    jobId: {
+      type: String,
+    },
     jobLogId: {
       type: String,
     },
@@ -47,6 +55,7 @@ export default {
       dataJobLogDetail: {
         parameter: {}
       },
+      manualCommand: "",
       timerGetJobLogList: null,
     };
   },
@@ -54,6 +63,9 @@ export default {
     this.show = this.showDialog;
   },
   watch: {
+    jobId() {
+      this.getManualCommand();
+    },
     jobLogId() {
       this.getJobLogDetail();
     },
@@ -102,7 +114,35 @@ export default {
             // console.log("respData.data.content = ", respData.data);
             this.$nextTick(() => {
               this.dataJobLogDetail = { ...respData.data };
-              console.log(this.dataJobLogDetail);
+            });
+          } else {
+            // 請求失敗
+            this.alertContent = "取得紀錄詳情失敗";
+            this.alertVisible = true;
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    },
+    getManualCommand() {
+      this.$http({
+        method: "post",
+        url: "job/manualCommand",
+        params: {
+          jobId: this.jobId,
+        },
+        headers: {
+          "Content-Type": "application/json",
+        },
+      })
+        .then((resp) => {
+          const respData = resp.data;
+          if (respData.returnCode === 1) {
+            // 請求成功
+            // console.log("respData.data.content = ", respData.data);
+            this.$nextTick(() => {
+              this.manualCommand = 'java -cp want-etl-worker.jar:resources:lib/sapjco3.jar com.want.App ' + respData.data;
             });
           } else {
             // 請求失敗
